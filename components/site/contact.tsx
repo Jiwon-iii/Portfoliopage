@@ -13,7 +13,14 @@ export function ContactSection({ hero, lang = "ko" }: { hero: Hero | null; lang?
         <div className="text-xs text-primary tracking-wider font-semibold mb-8">
           — LET&apos;S BUILD SOMETHING TOGETHER
         </div>
-        <h2 className="font-serif text-[clamp(64px,9vw,128px)] font-black tracking-tighter leading-none mb-12">
+        <h2
+          className={`font-serif font-black tracking-tighter leading-none mb-12 ${
+            // 일본어는 문구가 길고 글자 폭이 넓어 KR보다 작게
+            lang === "ja"
+              ? "text-[clamp(44px,7vw,92px)]"
+              : "text-[clamp(64px,9vw,128px)]"
+          }`}
+        >
           {label("contactLead", lang)} <em className="font-italic not-italic italic text-primary font-normal">{label("contactEm", lang)}</em>
         </h2>
         <a

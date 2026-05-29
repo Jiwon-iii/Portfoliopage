@@ -45,7 +45,14 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
             <span className="flex-1 h-px bg-border" />
           </div>
 
-          <h1 className="font-serif text-[clamp(72px,11vw,144px)] font-semibold tracking-[-0.03em] leading-[1.05] mb-3">
+          <h1
+            className={`font-serif font-semibold tracking-[-0.03em] leading-[1.05] mb-3 ${
+              // 일본어 이름(예: シン・ジウォン)은 글자 폭이 넓고 길어 KR보다 작게 잡아야 한 줄에 들어감
+              lang === "ja"
+                ? "text-[clamp(40px,8vw,76px)]"
+                : "text-[clamp(72px,11vw,144px)]"
+            }`}
+          >
             {name}
           </h1>
           <div className="font-italic italic text-3xl text-muted-foreground tracking-tight">
