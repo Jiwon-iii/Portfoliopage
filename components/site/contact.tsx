@@ -1,7 +1,8 @@
 import { ArrowRight } from "lucide-react"
+import { label, type Lang } from "@/lib/i18n"
 import type { Hero } from "@/lib/schemas/hero"
 
-export function ContactSection({ hero }: { hero: Hero | null }) {
+export function ContactSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: Lang }) {
   const email = hero?.email || "syrima03@gmail.com"
   const emailSecondary = hero?.emailSecondary || "syrima03@naver.com"
   const github = hero?.github || "https://github.com/Jiwon-iii"
@@ -13,7 +14,7 @@ export function ContactSection({ hero }: { hero: Hero | null }) {
           — LET&apos;S BUILD SOMETHING TOGETHER
         </div>
         <h2 className="font-serif text-[clamp(64px,9vw,128px)] font-black tracking-tighter leading-none mb-12">
-          함께 <em className="font-italic not-italic italic text-primary font-normal">만들어봐요</em>
+          {label("contactLead", lang)} <em className="font-italic not-italic italic text-primary font-normal">{label("contactEm", lang)}</em>
         </h2>
         <a
           href={`mailto:${email}`}
@@ -24,11 +25,11 @@ export function ContactSection({ hero }: { hero: Hero | null }) {
         </a>
         <div className="mt-10 flex justify-center gap-8 text-sm text-muted-foreground">
           <a href={github} target="_blank" rel="noreferrer" className="hover:text-primary">
-            → 깃허브 / JIWON-III
+            {label("contactGithub", lang)}
           </a>
           {emailSecondary && (
             <a href={`mailto:${emailSecondary}`} className="hover:text-primary">
-              → 네이버 메일
+              {label("contactNaver", lang)}
             </a>
           )}
         </div>

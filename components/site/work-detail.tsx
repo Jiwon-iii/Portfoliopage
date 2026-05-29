@@ -2,7 +2,7 @@ import { ArrowUpRight, Lock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ProjectImageSlider } from "@/components/site/project-image-slider"
-import { pickLang, type Lang } from "@/lib/i18n"
+import { label, pickLang, type Lang } from "@/lib/i18n"
 import type { Work } from "@/lib/schemas/work"
 
 /**
@@ -53,7 +53,7 @@ export function WorkDetail({
           {work.status === "in-progress" && (
             <div className="absolute top-4 left-4 z-20 font-mono text-[10px] tracking-widest bg-primary text-primary-foreground px-2.5 py-1 rounded flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              진행 중
+              {label("inProgress", lang)}
             </div>
           )}
           {work.year && (
@@ -104,7 +104,7 @@ export function WorkDetail({
         ) : description ? (
           <div className="mb-7">
             <div className="font-semibold text-primary text-xs flex items-center gap-2.5 mb-1.5">
-              <span className="w-3.5 h-px bg-primary" /> 설명
+              <span className="w-3.5 h-px bg-primary" /> {label("description", lang)}
             </div>
             <p className="text-[15px] leading-relaxed pl-6 text-foreground whitespace-pre-line">{description}</p>
           </div>
@@ -115,7 +115,7 @@ export function WorkDetail({
             {work.liveUrl ? (
               <Button asChild>
                 <a href={work.liveUrl} target="_blank" rel="noreferrer">
-                  {work.liveLabel || "자세히 보기"} <ArrowUpRight className="h-4 w-4" />
+                  {work.liveLabel || label("viewMore", lang)} <ArrowUpRight className="h-4 w-4" />
                 </a>
               </Button>
             ) : (

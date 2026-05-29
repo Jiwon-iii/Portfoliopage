@@ -4,6 +4,8 @@ import { listExperience } from "@/lib/repo/experience"
 import { listSkillsByCategory } from "@/lib/repo/skills"
 import { getHero } from "@/lib/repo/hero"
 import { getAbout } from "@/lib/repo/about"
+import { getSiteLang } from "@/lib/site-lang"
+import { label } from "@/lib/i18n"
 
 import { HeroSection } from "@/components/site/hero"
 import { Marquee } from "@/components/site/marquee"
@@ -14,8 +16,8 @@ import { TimelineSection } from "@/components/site/timeline"
 import { SkillsSection } from "@/components/site/skills"
 import { ContactSection } from "@/components/site/contact"
 
-/** ISR — 어드민에서 revalidatePath() 호출 시 즉시 갱신. */
-export const revalidate = 3600
+/** 쿠키(lang)로 표시 언어가 갈리므로 요청마다 동적 렌더링. 어드민 수정도 즉시 반영. */
+export const dynamic = "force-dynamic"
 
 async function loadAll() {
   try {
@@ -54,8 +56,7 @@ async function loadAll() {
 }
 
 export default async function HomePage() {
-  const data = await loadAll()
-  const lang = "ko" as const
+  const [data, { lang }] = await Promise.all([loadAll(), getSiteLang()])
 
   return (
     <main>
@@ -67,8 +68,8 @@ export default async function HomePage() {
       <TimelineSection
         num="04"
         totalNum="07"
-        title="학력"
-        subtitle="교육 배경"
+        title={label("sectionEducation", lang)}
+        subtitle={label("sectionEducationSub", lang)}
         aside={<>ACADEMIC BACKGROUND</>}
         items={data.education.map((e) => ({
           _id: e._id,
@@ -78,14 +79,14 @@ export default async function HomePage() {
           note: e.note,
         }))}
         lang={lang}
-        emptyMessage="학력 정보가 아직 추가되지 않았어요."
+        emptyMessage={label("emptyEducation", lang)}
       />
       <TimelineSection
         num="05"
         totalNum="07"
         numPosition="left"
-        title="경력 · 활동"
-        subtitle="일·동아리·공모전"
+        title={label("sectionExperience", lang)}
+        subtitle={label("sectionExperienceSub", lang)}
         aside={<>SELECTED ACTIVITIES</>}
         items={data.experience.map((e) => ({
           _id: e._id,
@@ -95,10 +96,10 @@ export default async function HomePage() {
           note: e.description,
         }))}
         lang={lang}
-        emptyMessage="경력 정보가 아직 추가되지 않았어요."
+        emptyMessage={label("emptyExperience", lang)}
       />
       <SkillsSection skills={data.skillsByCat} lang={lang} />
-      <ContactSection hero={data.hero} />
+      <ContactSection hero={data.hero} lang={lang} />
     </main>
   )
 }

@@ -1,6 +1,6 @@
 import { SectionShell } from "./section-shell"
 import { WorkDetail } from "./work-detail"
-import type { Lang } from "@/lib/i18n"
+import { label, type Lang } from "@/lib/i18n"
 import type { Work } from "@/lib/schemas/work"
 
 /**
@@ -15,12 +15,12 @@ export function ProjectsSection({ works, lang = "ko" }: { works: Work[]; lang?: 
         id="work"
         num="01"
         totalNum="07"
-        title="프로젝트"
-        subtitle="모든 프로젝트 상세"
+        title={label("sectionProjects", lang)}
+        subtitle={label("sectionProjectsSub", lang)}
         aside={<>SELECTED WORKS<br/>ALL DETAILED</>}
       >
         <div className="rounded-lg border border-dashed border-border p-12 text-center text-muted-foreground">
-          프로젝트가 아직 추가되지 않았어요. 어드민에서 추가해주세요.
+          {label("emptyWorks", lang)}
         </div>
       </SectionShell>
     )
@@ -31,8 +31,8 @@ export function ProjectsSection({ works, lang = "ko" }: { works: Work[]; lang?: 
       id="work"
       num="01"
       totalNum="07"
-      title="프로젝트"
-      subtitle="모든 프로젝트 상세"
+      title={label("sectionProjects", lang)}
+      subtitle={label("sectionProjectsSub", lang)}
       aside={<>SELECTED WORKS<br/>{works.length} TOTAL</>}
     >
       <div className="border-t-2 border-foreground">

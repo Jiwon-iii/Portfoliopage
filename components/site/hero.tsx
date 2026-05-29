@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { pickLang, type Lang } from "@/lib/i18n"
+import { label, pickLang, type Lang } from "@/lib/i18n"
 import type { Hero } from "@/lib/schemas/hero"
 
 const FALLBACK = {
@@ -53,7 +53,7 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
           </div>
 
           <div className="mt-12 max-w-xl">
-            <div className="text-xs text-primary font-medium mb-3">— 한 줄 소개</div>
+            <div className="text-xs text-primary font-medium mb-3">{label("heroIntro", lang)}</div>
             <h2 className="font-serif text-3xl font-bold tracking-tight leading-normal">
               {taglineParts.map((part, i) =>
                 part.startsWith("*") && part.endsWith("*") ? (

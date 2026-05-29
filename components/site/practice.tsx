@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "lucide-react"
 import { SectionShell } from "./section-shell"
-import { pickLang, type Lang } from "@/lib/i18n"
+import { label, pickLang, type Lang } from "@/lib/i18n"
 import type { Work } from "@/lib/schemas/work"
 
 /**
@@ -17,8 +17,8 @@ export function PracticeSection({ works, lang = "ko" }: { works: Work[]; lang?: 
       num="02"
       totalNum="07"
       numPosition="left"
-      title="그 외 프로젝트"
-      subtitle="연습 작업물"
+      title={label("sectionPractice", lang)}
+      subtitle={label("sectionPracticeSub", lang)}
       aside={<>PRACTICE WORKS<br/>{works.length} ITEMS</>}
     >
       <div className="border-t-2 border-foreground">
