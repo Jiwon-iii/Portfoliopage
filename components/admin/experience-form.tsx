@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
+import { AdminLangBar } from "@/components/admin/admin-lang"
 import { TagInput } from "@/components/admin/tag-input"
 import type { Experience } from "@/lib/schemas/experience"
 
@@ -69,6 +70,7 @@ export function ExperienceForm({ experience }: { experience?: Experience | null 
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-3xl">
+      <AdminLangBar />
       <Card className="p-6 space-y-5">
         <I18nTabs label="역할 / 활동명" required value={title} onChange={(v) => setTitle(v)} />
         <I18nTabs label="회사 / 동아리 / 기관" value={orgName} onChange={(v) => setOrgName(v)} />

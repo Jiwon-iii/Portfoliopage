@@ -41,6 +41,17 @@ export function ImageUpload({
 }) {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
+  // 썸네일 순서 변경(드래그)용
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [overIndex, setOverIndex] = useState<number | null>(null)
+
+  function reorder(from: number, to: number) {
+    if (from === to) return
+    const next = [...value]
+    const [moved] = next.splice(from, 1)
+    next.splice(to, 0, moved)
+    onChange(next)
+  }
 
   async function upload(files: FileList | File[]) {
     if (value.length + files.length > max) {
@@ -110,30 +121,69 @@ export function ImageUpload({
       </label>
 
       {value.length > 0 && (
-        <div className="flex flex-wrap gap-4 pt-2 pr-2">
-          {value.map((img, i) => (
-            <div key={img.url} className="relative w-36 h-28">
-              {/* 이미지 컨테이너 — overflow-hidden 으로 라운드 처리 */}
-              <div className="absolute inset-0 rounded-md overflow-hidden border border-border bg-secondary">
-                <Image src={img.url} alt={img.alt || ""} fill className="object-cover" sizes="144px" />
-                {i === 0 && (
-                  <span className="absolute bottom-0 left-0 right-0 bg-primary text-primary-foreground text-[10px] font-mono tracking-wider text-center py-1">
-                    THUMBNAIL
-                  </span>
+        <>
+          <p className="text-xs text-muted-foreground pt-1">
+            드래그해서 순서를 바꿀 수 있어요. 첫 번째 이미지가 썸네일로 사용됩니다.
+          </p>
+          <div className="flex flex-wrap gap-4 pt-1 pr-2">
+            {value.map((img, i) => (
+              <div
+                key={img.url}
+                draggable
+                onDragStart={(e) => {
+                  setDragIndex(i)
+                  e.dataTransfer.effectAllowed = "move"
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                  e.dataTransfer.dropEffect = "move"
+                  if (overIndex !== i) setOverIndex(i)
+                }}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  if (dragIndex !== null) reorder(dragIndex, i)
+                  setDragIndex(null)
+                  setOverIndex(null)
+                }}
+                onDragEnd={() => {
+                  setDragIndex(null)
+                  setOverIndex(null)
+                }}
+                className={cn(
+                  "relative w-36 h-28 rounded-md cursor-move transition-all",
+                  dragIndex === i && "opacity-40",
+                  overIndex === i && dragIndex !== i && "ring-2 ring-primary ring-offset-2 ring-offset-background",
                 )}
-              </div>
-              {/* X 버튼 — 컨테이너 밖에 있어서 잘리지 않음 */}
-              <button
-                type="button"
-                onClick={() => onChange(value.filter((_, idx) => idx !== i))}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-zinc-900 text-white rounded-full grid place-items-center shadow-md ring-2 ring-background hover:bg-destructive hover:scale-110 transition-all z-10"
-                aria-label="이미지 제거"
               >
-                <X className="h-3 w-3 stroke-[2.5]" />
-              </button>
-            </div>
-          ))}
-        </div>
+                {/* 이미지 컨테이너 — overflow-hidden 으로 라운드 처리 */}
+                <div className="absolute inset-0 rounded-md overflow-hidden border border-border bg-secondary">
+                  <Image
+                    src={img.url}
+                    alt={img.alt || ""}
+                    fill
+                    draggable={false}
+                    className="object-cover pointer-events-none"
+                    sizes="144px"
+                  />
+                  {i === 0 && (
+                    <span className="absolute bottom-0 left-0 right-0 bg-primary text-primary-foreground text-[10px] font-mono tracking-wider text-center py-1">
+                      THUMBNAIL
+                    </span>
+                  )}
+                </div>
+                {/* X 버튼 — 컨테이너 밖에 있어서 잘리지 않음 */}
+                <button
+                  type="button"
+                  onClick={() => onChange(value.filter((_, idx) => idx !== i))}
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-zinc-900 text-white rounded-full grid place-items-center shadow-md ring-2 ring-background hover:bg-destructive hover:scale-110 transition-all z-10"
+                  aria-label="이미지 제거"
+                >
+                  <X className="h-3 w-3 stroke-[2.5]" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   )

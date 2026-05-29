@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
+import { AdminLangBar } from "@/components/admin/admin-lang"
 import { ImageUpload, type UploadedImage } from "@/components/admin/image-upload"
 import type { About } from "@/lib/schemas/about"
 
@@ -51,6 +52,7 @@ export function AboutForm({ initial }: { initial: About | null }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-4xl">
+      <AdminLangBar />
       <Card className="p-6 space-y-5">
         <I18nTabs
           label="큰 인용문 (heading)"

@@ -1,4 +1,4 @@
-import { GitBranch, ArrowRight, ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, Lock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ProjectImageSlider } from "@/components/site/project-image-slider"
@@ -27,13 +27,13 @@ export function WorkDetail({
   const title = pickLang(work.title, lang)
   const tagline = pickLang(work.tagline, lang)
   const description = pickLang(work.description, lang)
-  const problem = pickLang(work.problem, lang)
-  const approach = pickLang(work.approach, lang)
-  const outcome = pickLang(work.outcome, lang)
+  const sections = (work.sections ?? [])
+    .map((s) => ({ title: pickLang(s.title, lang), body: pickLang(s.body, lang) }))
+    .filter((s) => s.title || s.body)
   const images = work.images ?? []
   const num = String(index + 1).padStart(3, "0")
   const imageRight = index % 2 === 1
-  const hasCaseStudy = !!(problem || approach || outcome)
+  const hasCaseStudy = sections.length > 0
   const defaultLabel =
     work.status === "in-progress"
       ? `IN PROGRESS · ${num}`
@@ -41,25 +41,27 @@ export function WorkDetail({
 
   return (
     <article className="grid lg:grid-cols-2 gap-15 py-20 border-b border-border last:border-b-0">
-      {/* 비주얼 */}
-      <div className={`relative ${imageRight ? "lg:order-2" : ""}`}>
-        <ProjectImageSlider
-          images={images}
-          alt={title}
-          ratio="4 / 5"
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
-        {work.status === "in-progress" && (
-          <div className="absolute top-4 left-4 z-20 font-mono text-[10px] tracking-widest bg-primary text-primary-foreground px-2.5 py-1 rounded flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-            진행 중
-          </div>
-        )}
-        {work.year && (
-          <div className="absolute bottom-4 right-4 z-20 font-mono text-[10px] tracking-widest bg-background/85 backdrop-blur text-foreground px-2.5 py-1 rounded">
-            {work.year}
-          </div>
-        )}
+      {/* 비주얼 — 설명이 길어 행 높이가 늘어나면 이미지를 세로 가운데로 */}
+      <div className={`flex items-center ${imageRight ? "lg:order-2" : ""}`}>
+        <div className="relative w-full">
+          <ProjectImageSlider
+            images={images}
+            alt={title}
+            ratio="4 / 5"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          {work.status === "in-progress" && (
+            <div className="absolute top-4 left-4 z-20 font-mono text-[10px] tracking-widest bg-primary text-primary-foreground px-2.5 py-1 rounded flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+              진행 중
+            </div>
+          )}
+          {work.year && (
+            <div className="absolute bottom-4 right-4 z-20 font-mono text-[10px] tracking-widest bg-background/85 backdrop-blur text-foreground px-2.5 py-1 rounded">
+              {work.year}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 케이스 스터디 */}
@@ -86,30 +88,18 @@ export function WorkDetail({
 
         {hasCaseStudy ? (
           <dl className="space-y-5 mb-7">
-            {problem && (
-              <div>
-                <dt className="font-semibold text-primary text-xs flex items-center gap-2.5 mb-1.5">
-                  <span className="w-3.5 h-px bg-primary" /> 문제
-                </dt>
-                <dd className="text-[15px] leading-relaxed pl-6">{problem}</dd>
+            {sections.map((s, i) => (
+              <div key={i}>
+                {s.title && (
+                  <dt className="font-semibold text-primary text-xs flex items-center gap-2.5 mb-1.5">
+                    <span className="w-3.5 h-px bg-primary" /> {s.title}
+                  </dt>
+                )}
+                {s.body && (
+                  <dd className="text-[15px] leading-relaxed pl-6 whitespace-pre-line">{s.body}</dd>
+                )}
               </div>
-            )}
-            {approach && (
-              <div>
-                <dt className="font-semibold text-primary text-xs flex items-center gap-2.5 mb-1.5">
-                  <span className="w-3.5 h-px bg-primary" /> 접근
-                </dt>
-                <dd className="text-[15px] leading-relaxed pl-6">{approach}</dd>
-              </div>
-            )}
-            {outcome && (
-              <div>
-                <dt className="font-semibold text-primary text-xs flex items-center gap-2.5 mb-1.5">
-                  <span className="w-3.5 h-px bg-primary" /> 결과
-                </dt>
-                <dd className="text-[15px] leading-relaxed pl-6">{outcome}</dd>
-              </div>
-            )}
+            ))}
           </dl>
         ) : description ? (
           <div className="mb-7">
@@ -120,22 +110,23 @@ export function WorkDetail({
           </div>
         ) : null}
 
-        <div className="flex gap-3 pt-6 border-t border-border">
-          {work.liveUrl && (
-            <Button asChild>
-              <a href={work.liveUrl} target="_blank" rel="noreferrer">
-                자세히 보기 <ArrowRight className="h-4 w-4" />
-              </a>
-            </Button>
-          )}
-          {work.githubUrl && (
-            <Button asChild variant="outline">
-              <a href={work.githubUrl} target="_blank" rel="noreferrer">
-                <GitBranch className="h-4 w-4" /> 깃허브 <ArrowUpRight className="h-3 w-3" />
-              </a>
-            </Button>
-          )}
-        </div>
+        {(work.liveUrl || work.liveLabel) && (
+          <div className="flex gap-3 pt-6 border-t border-border">
+            {work.liveUrl ? (
+              <Button asChild>
+                <a href={work.liveUrl} target="_blank" rel="noreferrer">
+                  {work.liveLabel || "자세히 보기"} <ArrowUpRight className="h-4 w-4" />
+                </a>
+              </Button>
+            ) : (
+              // URL 없이 버튼 이름만 — 클릭 불가 텍스트 (예: 기업 의뢰 · 비공개)
+              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground border border-border rounded-md px-4 py-2">
+                <Lock className="h-3.5 w-3.5" />
+                {work.liveLabel}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </article>
   )

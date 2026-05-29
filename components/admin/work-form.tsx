@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Card } from "@/components/ui/card"
-import { Sparkles, Trash2 } from "lucide-react"
+import { Sparkles, Trash2, Plus, ChevronUp, ChevronDown } from "lucide-react"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
+import { AdminLangBar } from "@/components/admin/admin-lang"
 import { TagInput } from "@/components/admin/tag-input"
 import { ImageUpload, type UploadedImage } from "@/components/admin/image-upload"
-import type { Work, WorkType, WorkStatus } from "@/lib/schemas/work"
+import type { Work, WorkType, WorkStatus, WorkSection } from "@/lib/schemas/work"
+
+type I18nValue = { ko?: string | null; ja?: string | null; en?: string | null }
 
 type FormState = {
   slug: string
@@ -21,14 +24,11 @@ type FormState = {
   order: number
   title: { ko: string; ja?: string | null; en?: string | null }
   tagline: { ko?: string | null; ja?: string | null; en?: string | null }
-  description: { ko?: string | null; ja?: string | null; en?: string | null }
-  problem: { ko?: string | null; ja?: string | null; en?: string | null }
-  approach: { ko?: string | null; ja?: string | null; en?: string | null }
-  outcome: { ko?: string | null; ja?: string | null; en?: string | null }
+  sections: WorkSection[]
   techs: string[]
   year?: number
-  githubUrl: string
   liveUrl: string
+  liveLabel: string
   images: UploadedImage[]
   published: boolean
 }
@@ -41,14 +41,11 @@ function initialFromWork(w?: Work | null): FormState {
     order: w?.order ?? 0,
     title: w?.title ?? { ko: "" },
     tagline: w?.tagline ?? { ko: "" },
-    description: w?.description ?? { ko: "" },
-    problem: w?.problem ?? { ko: "" },
-    approach: w?.approach ?? { ko: "" },
-    outcome: w?.outcome ?? { ko: "" },
+    sections: w?.sections ?? [],
     techs: w?.techs ?? [],
     year: w?.year,
-    githubUrl: w?.githubUrl ?? "",
     liveUrl: w?.liveUrl ?? "",
+    liveLabel: w?.liveLabel ?? "",
     images: w?.images ?? [],
     published: w?.published ?? true,
   }
@@ -59,9 +56,23 @@ export function WorkForm({ work }: { work?: Work | null }) {
   const [state, setState] = useState<FormState>(initialFromWork(work))
   const [saving, setSaving] = useState(false)
   const isEdit = !!work
-  const isGeneral = state.type === "general"
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => setState((s) => ({ ...s, [key]: value }))
+
+  // 상세 내용 단락 조작
+  const addSection = () =>
+    set("sections", [...state.sections, { title: { ko: "" }, body: { ko: "" } }])
+  const removeSection = (i: number) =>
+    set("sections", state.sections.filter((_, idx) => idx !== i))
+  const updateSection = (i: number, key: "title" | "body", value: I18nValue) =>
+    set("sections", state.sections.map((sec, idx) => (idx === i ? { ...sec, [key]: value } : sec)))
+  const moveSection = (i: number, dir: -1 | 1) => {
+    const j = i + dir
+    if (j < 0 || j >= state.sections.length) return
+    const next = [...state.sections]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    set("sections", next)
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -82,14 +93,11 @@ export function WorkForm({ work }: { work?: Work | null }) {
         order: state.order,
         title: state.title,
         tagline: state.tagline,
-        description: state.description,
-        problem: isGeneral ? state.problem : undefined,
-        approach: isGeneral ? state.approach : undefined,
-        outcome: isGeneral ? state.outcome : undefined,
+        sections: state.sections,
         techs: state.techs,
         year: state.year || undefined,
-        githubUrl: state.githubUrl || "",
         liveUrl: state.liveUrl || "",
+        liveLabel: (state.liveLabel ?? "").trim() || undefined,
         images: state.images,
         published: state.published,
       }
@@ -129,6 +137,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-4xl">
+      <AdminLangBar />
       {/* 메타 */}
       <Card className="p-6 space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -199,27 +208,86 @@ export function WorkForm({ work }: { work?: Work | null }) {
           value={state.tagline}
           onChange={(v) => set("tagline", v)}
         />
-        <I18nTabs
-          label="상세 설명"
-          hint="마크다운"
-          multiline
-          value={state.description}
-          onChange={(v) => set("description", v)}
-        />
       </Card>
 
-      {/* 일반 전용: PROBLEM / APPROACH / OUTCOME (선택) */}
-      {isGeneral && (
-        <Card className="p-6 space-y-5 border-primary/40">
-          <div className="text-xs text-primary font-mono tracking-wider font-semibold flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5" />
-            케이스 스터디 (선택)
+      {/* 상세 내용 단락 (제목+내용, 자유 추가/삭제) */}
+      <Card className="p-6 space-y-5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="text-sm font-semibold flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              상세 내용 <span className="text-xs text-muted-foreground font-normal">단락별 제목 + 내용</span>
+            </div>
+            <Button type="button" variant="outline" size="sm" onClick={addSection}>
+              <Plus className="h-3.5 w-3.5" />
+              단락 추가
+            </Button>
           </div>
-          <I18nTabs label="문제 (PROBLEM)" value={state.problem} onChange={(v) => set("problem", v)} />
-          <I18nTabs label="접근 (APPROACH)" value={state.approach} onChange={(v) => set("approach", v)} />
-          <I18nTabs label="결과 (OUTCOME)" value={state.outcome} onChange={(v) => set("outcome", v)} />
-        </Card>
-      )}
+
+          {state.sections.length === 0 ? (
+            <p className="text-xs text-muted-foreground">
+              단락을 추가해 제목·내용으로 상세 내용을 구성하세요. (예: 개요 / 문제 / 접근 / 결과)
+              제목을 비워두면 내용만 표시됩니다.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {state.sections.map((sec, i) => (
+                <div key={i} className="rounded-md border border-border p-4 space-y-4 bg-background">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono text-muted-foreground tracking-wider">
+                      단락 {i + 1}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        disabled={i === 0}
+                        onClick={() => moveSection(i, -1)}
+                        aria-label="위로"
+                      >
+                        <ChevronUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        disabled={i === state.sections.length - 1}
+                        onClick={() => moveSection(i, 1)}
+                        aria-label="아래로"
+                      >
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-destructive"
+                        onClick={() => removeSection(i)}
+                        aria-label="단락 삭제"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <I18nTabs
+                    label="단락 제목"
+                    value={sec.title}
+                    onChange={(v) => updateSection(i, "title", v)}
+                  />
+                  <I18nTabs
+                    label="단락 내용"
+                    hint="마크다운"
+                    multiline
+                    value={sec.body}
+                    onChange={(v) => updateSection(i, "body", v)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+      </Card>
 
       {/* 기술 태그 + URL */}
       <Card className="p-6 space-y-5">
@@ -228,59 +296,53 @@ export function WorkForm({ work }: { work?: Work | null }) {
           <TagInput value={state.techs} onChange={(v) => set("techs", v)} />
           <p className="text-xs text-muted-foreground">Enter 또는 쉼표로 추가</p>
         </div>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="githubUrl">GitHub URL</Label>
-            <Input
-              id="githubUrl"
-              type="url"
-              value={state.githubUrl}
-              onChange={(e) => set("githubUrl", e.target.value)}
-              placeholder="https://github.com/..."
-            />
+        <div className="space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="liveLabel">버튼 이름 <span className="text-muted-foreground text-xs">선택</span></Label>
+              <Input
+                id="liveLabel"
+                value={state.liveLabel}
+                onChange={(e) => set("liveLabel", e.target.value)}
+                placeholder="자세히 보기"
+                maxLength={40}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="liveUrl">링크 URL <span className="text-muted-foreground text-xs">선택</span></Label>
+              <Input
+                id="liveUrl"
+                type="url"
+                value={state.liveUrl}
+                onChange={(e) => set("liveUrl", e.target.value)}
+                placeholder="https://..."
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="liveUrl">라이브 URL <span className="text-muted-foreground text-xs">선택</span></Label>
-            <Input
-              id="liveUrl"
-              type="url"
-              value={state.liveUrl}
-              onChange={(e) => set("liveUrl", e.target.value)}
-              placeholder="https://..."
-            />
-          </div>
+          <p className="text-xs text-muted-foreground">
+            버튼 이름을 비우면 &ldquo;자세히 보기&rdquo;로 표시됩니다.
+            URL 을 넣으면 클릭 가능한 버튼, 버튼 이름만 넣고 URL 을 비우면 클릭 안 되는 텍스트로 표시됩니다
+            (예: 기업 의뢰 · 비공개). 둘 다 비우면 아무것도 표시되지 않습니다.
+          </p>
         </div>
       </Card>
 
       {/* 이미지 */}
       <Card className="p-6 space-y-3">
-        <Label>스크린샷 · 데모 이미지 <span className="text-muted-foreground text-xs">최대 5장. 첫 번째 = 썸네일</span></Label>
-        <ImageUpload value={state.images} onChange={(v) => set("images", v)} />
+        <Label>스크린샷 · 데모 이미지 <span className="text-muted-foreground text-xs">최대 10장. 첫 번째 = 썸네일</span></Label>
+        <ImageUpload value={state.images} onChange={(v) => set("images", v)} max={10} />
       </Card>
 
       {/* 노출 설정 */}
       <Card className="p-6">
         <Label className="mb-3 block">노출 설정</Label>
         <div className="bg-background rounded-md px-4">
-          <div className="flex justify-between items-center py-3 border-b border-border">
+          <div className="flex justify-between items-center py-3">
             <div>
               <div className="font-semibold text-sm">사이트에 공개</div>
               <div className="text-xs text-muted-foreground">OFF 면 어드민에만 보이고 사이트엔 노출 안 됨</div>
             </div>
             <Switch checked={state.published} onCheckedChange={(c) => set("published", c)} />
-          </div>
-          <div className="flex justify-between items-center py-3">
-            <div>
-              <div className="font-semibold text-sm">정렬 순서</div>
-              <div className="text-xs text-muted-foreground">작을수록 위. 0~10 권장</div>
-            </div>
-            <Input
-              type="number"
-              min={0}
-              value={state.order}
-              onChange={(e) => set("order", Number(e.target.value) || 0)}
-              className="w-24"
-            />
           </div>
         </div>
       </Card>

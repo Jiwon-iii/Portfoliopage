@@ -24,7 +24,34 @@ function toClient(doc: Record<string, unknown> & { _id: ObjectId }): Work {
   }
   if (!status) status = "completed"
 
-  return { _id: _id.toString(), ...rest, type, status } as unknown as Work
+  // 상세 내용: 신규 sections 가 비어있으면 레거시 필드를 단락으로 변환.
+  //  1순위: problem/approach/outcome → "문제/접근/결과" 단락
+  //  2순위: description → 제목 없는 단락
+  const hasContent = (f: unknown) =>
+    !!f && typeof f === "object" && Object.values(f as Record<string, unknown>).some(Boolean)
+  let sections = Array.isArray(rest.sections) ? rest.sections : []
+  if (sections.length === 0) {
+    const legacy: { title: { ko: string }; body: unknown }[] = []
+    if (hasContent(rest.problem)) legacy.push({ title: { ko: "문제" }, body: rest.problem })
+    if (hasContent(rest.approach)) legacy.push({ title: { ko: "접근" }, body: rest.approach })
+    if (hasContent(rest.outcome)) legacy.push({ title: { ko: "결과" }, body: rest.outcome })
+    if (legacy.length === 0 && hasContent(rest.description)) {
+      legacy.push({ title: { ko: "" }, body: rest.description })
+    }
+    if (legacy.length > 0) sections = legacy
+  }
+
+  // 링크 단일화: liveUrl 이 비었고 레거시 githubUrl 이 있으면 단일 링크로 승격.
+  let liveUrl = typeof rest.liveUrl === "string" ? rest.liveUrl : ""
+  let liveLabel = typeof rest.liveLabel === "string" ? rest.liveLabel : ""
+  if (!liveUrl && typeof rest.githubUrl === "string" && rest.githubUrl) {
+    liveUrl = rest.githubUrl
+    if (!liveLabel) {
+      liveLabel = typeof rest.githubLabel === "string" && rest.githubLabel ? rest.githubLabel : "깃허브"
+    }
+  }
+
+  return { _id: _id.toString(), ...rest, type, status, sections, liveUrl, liveLabel } as unknown as Work
 }
 
 export async function listWorks(filter: { type?: WorkType; publishedOnly?: boolean } = {}): Promise<Work[]> {

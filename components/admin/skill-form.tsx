@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
+import { AdminLangBar } from "@/components/admin/admin-lang"
 import type { Skill, SkillCategory } from "@/lib/schemas/skill"
 
 type I18nValue = { ko?: string | null; ja?: string | null; en?: string | null }
@@ -65,6 +66,7 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl">
+      <AdminLangBar />
       <Card className="p-6 space-y-5">
         <div className="space-y-2">
           <Label>카테고리</Label>

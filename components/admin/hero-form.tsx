@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
+import { AdminLangBar } from "@/components/admin/admin-lang"
 import { ImageUpload, type UploadedImage } from "@/components/admin/image-upload"
 import { TagInput } from "@/components/admin/tag-input"
 import type { Hero } from "@/lib/schemas/hero"
@@ -75,6 +76,7 @@ export function HeroForm({ initial }: { initial: Hero | null }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-4xl">
+      <AdminLangBar />
       <Card className="p-6 space-y-5">
         <I18nTabs label="이름" required value={name} onChange={(v) => setName(v as typeof name)} />
         <I18nTabs label="한 줄 소개 (태그라인)" required hint="* * 로 감싸면 이탤릭+인디고 강조" multiline value={tagline} onChange={(v) => setTagline(v as typeof tagline)} />

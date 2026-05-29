@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { AdminLangToggle } from "@/components/admin/admin-lang"
 
 type Item = {
   href: string
@@ -126,6 +127,12 @@ export function AdminSidebar() {
           <PanelsTopLeft className="h-6 w-6 text-primary" />
           <h1 className="font-serif font-bold text-base tracking-tight">PORTFOLIO ADMIN</h1>
         </Link>
+
+        {/* 콘텐츠 입력 언어 — 모든 폼의 다국어 필드에 일괄 적용 */}
+        <div className="px-3 pt-1 pb-1">
+          <p className="text-xs font-medium text-muted-foreground px-1 pb-1.5">콘텐츠 입력 언어</p>
+          <AdminLangToggle />
+        </div>
 
         {SECTIONS.map((section) => (
           <div key={section.label} className="pt-5">

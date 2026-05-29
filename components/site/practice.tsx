@@ -1,4 +1,4 @@
-import { ArrowUpRight, GitBranch } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 import { SectionShell } from "./section-shell"
 import { pickLang, type Lang } from "@/lib/i18n"
 import type { Work } from "@/lib/schemas/work"
@@ -26,7 +26,7 @@ export function PracticeSection({ works, lang = "ko" }: { works: Work[]; lang?: 
           const num = String(i + 1).padStart(3, "0")
           const title = pickLang(w.title, lang)
           const tagline = pickLang(w.tagline, lang)
-          const link = w.liveUrl || w.githubUrl
+          const link = w.liveUrl
           const Wrapper = link ? "a" : "div"
 
           return (
@@ -53,9 +53,7 @@ export function PracticeSection({ works, lang = "ko" }: { works: Work[]; lang?: 
                 {w.year ?? ""}
               </div>
               <div className="flex justify-end">
-                {w.githubUrl ? (
-                  <GitBranch className="h-4 w-4 text-foreground group-hover:text-primary group-hover:translate-x-1 transition" />
-                ) : w.liveUrl ? (
+                {w.liveUrl ? (
                   <ArrowUpRight className="h-4 w-4 text-foreground group-hover:text-primary group-hover:translate-x-1 transition" />
                 ) : (
                   <span className="w-4 h-4" />

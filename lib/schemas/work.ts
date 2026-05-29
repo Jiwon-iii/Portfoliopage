@@ -14,6 +14,16 @@ export type WorkType = z.infer<typeof workType>
 export const workStatus = z.enum(["in-progress", "completed"])
 export type WorkStatus = z.infer<typeof workStatus>
 
+/**
+ * 케이스 스터디 단락. 제목 + 내용(마크다운) 한 쌍, 둘 다 다국어.
+ * 단락을 자유롭게 추가/삭제/정렬하여 상세 내용을 구성한다.
+ */
+export const workSection = z.object({
+  title: i18nFieldOptional,
+  body: i18nFieldOptional,
+})
+export type WorkSection = z.infer<typeof workSection>
+
 const baseShape = z.object({
   slug: z
     .string()
@@ -26,9 +36,11 @@ const baseShape = z.object({
 
   title: i18nField,
   tagline: i18nFieldOptional,
-  description: i18nFieldOptional, // 마크다운
+  // 상세 내용 단락 (제목+내용, 자유 추가/삭제) — 통합 본문
+  sections: z.array(workSection).default([]),
 
-  // 케이스 스터디 (옵션)
+  // 레거시 필드 — 읽기 호환용. 신규 입력은 sections 로 통합.
+  description: i18nFieldOptional.optional(), // 마크다운
   problem: i18nFieldOptional.optional(),
   approach: i18nFieldOptional.optional(),
   outcome: i18nFieldOptional.optional(),
@@ -36,8 +48,11 @@ const baseShape = z.object({
   techs: z.array(z.string()).default([]),
   year: z.number().int().min(2000).max(2100).optional(),
 
+  // 링크 — 둘 다 선택. URL 이 깃허브가 아닐 수도 있어 버튼 텍스트를 따로 지정 가능.
   githubUrl: z.string().url().optional().or(z.literal("")),
   liveUrl: z.string().url().optional().or(z.literal("")),
+  githubLabel: z.string().max(40).optional(), // 비우면 "깃허브"
+  liveLabel: z.string().max(40).optional(), // 비우면 "자세히 보기"
 
   images: z.array(imageRef).default([]),
 
