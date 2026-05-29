@@ -9,9 +9,10 @@ function toClient(doc: { _id: ObjectId } & Record<string, unknown>) {
   return { _id: _id.toString(), ...rest } as unknown as Skill
 }
 
-export async function listSkills(category?: SkillCategory): Promise<Skill[]> {
+export async function listSkills(category?: SkillCategory, publishedOnly = true): Promise<Skill[]> {
   const db = await getDb()
-  const q: Record<string, unknown> = { published: true }
+  const q: Record<string, unknown> = {}
+  if (publishedOnly) q.published = true
   if (category) q.category = category
   const docs = await db.collection(COLLECTION).find(q).sort({ order: 1, createdAt: -1 }).toArray()
   return docs.map((d) => toClient(d as never))
@@ -57,6 +58,14 @@ export async function deleteSkill(id: string): Promise<boolean> {
   const db = await getDb()
   const result = await db.collection(COLLECTION).deleteOne({ _id: new ObjectId(id) })
   return result.deletedCount === 1
+}
+
+export async function reorderSkills(ids: string[]): Promise<void> {
+  const db = await getDb()
+  const ops = ids.map((id, order) => ({
+    updateOne: { filter: { _id: new ObjectId(id) }, update: { $set: { order, updatedAt: new Date() } } },
+  }))
+  if (ops.length > 0) await db.collection(COLLECTION).bulkWrite(ops)
 }
 
 export async function ensureIndexes() {

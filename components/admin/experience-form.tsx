@@ -26,7 +26,6 @@ export function ExperienceForm({ experience }: { experience?: Experience | null 
   const [end, setEnd] = useState(experience?.period.end ?? "현재")
   const [techs, setTechs] = useState<string[]>(experience?.techs ?? [])
   const [description, setDescription] = useState<I18nValue>(experience?.description ?? { ko: "" })
-  const [order, setOrder] = useState(experience?.order ?? 0)
   const [published, setPublished] = useState(experience?.published ?? true)
 
   async function onSubmit(e: React.FormEvent) {
@@ -41,7 +40,7 @@ export function ExperienceForm({ experience }: { experience?: Experience | null 
       const res = await fetch(url, {
         method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, orgName, period: { start, end }, techs, description, order, published }),
+        body: JSON.stringify({ title, orgName, period: { start, end }, techs, description, published }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -97,10 +96,6 @@ export function ExperienceForm({ experience }: { experience?: Experience | null 
             <div className="font-semibold text-sm">공개</div>
           </div>
           <Switch checked={published} onCheckedChange={setPublished} />
-        </div>
-        <div className="flex justify-between items-center py-2 border-t border-border">
-          <div className="font-semibold text-sm">정렬</div>
-          <Input type="number" min={0} value={order} onChange={(e) => setOrder(Number(e.target.value) || 0)} className="w-24" />
         </div>
       </Card>
 

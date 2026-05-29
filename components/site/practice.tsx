@@ -18,7 +18,7 @@ export function PracticeSection({ works, lang = "ko" }: { works: Work[]; lang?: 
       totalNum="07"
       numPosition="left"
       title="그 외 프로젝트"
-      subtitle="연습·토이 작업물"
+      subtitle="연습 작업물"
       aside={<>PRACTICE WORKS<br/>{works.length} ITEMS</>}
     >
       <div className="border-t-2 border-foreground">

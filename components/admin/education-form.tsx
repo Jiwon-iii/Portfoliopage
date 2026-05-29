@@ -24,7 +24,6 @@ export function EducationForm({ education }: { education?: Education | null }) {
   const [start, setStart] = useState(education?.period.start ?? "")
   const [end, setEnd] = useState(education?.period.end ?? "현재")
   const [note, setNote] = useState<I18nValue>(education?.note ?? { ko: "" })
-  const [order, setOrder] = useState(education?.order ?? 0)
   const [published, setPublished] = useState(education?.published ?? true)
 
   async function onSubmit(e: React.FormEvent) {
@@ -39,7 +38,7 @@ export function EducationForm({ education }: { education?: Education | null }) {
       const res = await fetch(url, {
         method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ schoolName, major, period: { start, end }, note, order, published }),
+        body: JSON.stringify({ schoolName, major, period: { start, end }, note, published }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -92,12 +91,6 @@ export function EducationForm({ education }: { education?: Education | null }) {
             <div className="text-xs text-muted-foreground">OFF 면 어드민에만 보임</div>
           </div>
           <Switch checked={published} onCheckedChange={setPublished} />
-        </div>
-        <div className="flex justify-between items-center py-2 border-t border-border">
-          <div>
-            <div className="font-semibold text-sm">정렬 순서</div>
-          </div>
-          <Input type="number" min={0} value={order} onChange={(e) => setOrder(Number(e.target.value) || 0)} className="w-24" />
         </div>
       </Card>
 

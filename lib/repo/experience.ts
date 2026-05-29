@@ -50,6 +50,14 @@ export async function deleteExperience(id: string): Promise<boolean> {
   return result.deletedCount === 1
 }
 
+export async function reorderExperience(ids: string[]): Promise<void> {
+  const db = await getDb()
+  const ops = ids.map((id, order) => ({
+    updateOne: { filter: { _id: new ObjectId(id) }, update: { $set: { order, updatedAt: new Date() } } },
+  }))
+  if (ops.length > 0) await db.collection(COLLECTION).bulkWrite(ops)
+}
+
 export async function ensureIndexes() {
   const db = await getDb()
   await db.collection(COLLECTION).createIndex({ order: 1, published: 1 })

@@ -22,7 +22,6 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
   const [category, setCategory] = useState<SkillCategory>(skill?.category ?? "main")
   const [name, setName] = useState(skill?.name ?? "")
   const [level, setLevel] = useState<I18nValue>(skill?.level ?? { ko: "" })
-  const [order, setOrder] = useState(skill?.order ?? 0)
   const [published, setPublished] = useState(skill?.published ?? true)
 
   async function onSubmit(e: React.FormEvent) {
@@ -37,7 +36,7 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
       const res = await fetch(url, {
         method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category, name, level, order, published }),
+        body: JSON.stringify({ category, name, level, published }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -91,10 +90,6 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
         <div className="flex justify-between items-center py-2">
           <div className="font-semibold text-sm">공개</div>
           <Switch checked={published} onCheckedChange={setPublished} />
-        </div>
-        <div className="flex justify-between items-center py-2 border-t border-border">
-          <div className="font-semibold text-sm">정렬 (카테고리 내)</div>
-          <Input type="number" min={0} value={order} onChange={(e) => setOrder(Number(e.target.value) || 0)} className="w-24" />
         </div>
       </Card>
 
