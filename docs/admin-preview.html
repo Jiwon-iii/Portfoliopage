@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Portfolio Admin — 신지원</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ───── shadcn-style design tokens (zinc base + indigo primary) ───── */
+:root{
+  --background:#FAFAFA;          /* zinc-50 */
+  --foreground:#18181B;          /* zinc-900 */
+  --card:#FFFFFF;
+  --card-foreground:#18181B;
+  --popover:#FFFFFF;
+  --popover-foreground:#18181B;
+  --primary:#6366F1;             /* indigo-500 */
+  --primary-foreground:#FFFFFF;
+  --secondary:#F4F4F5;           /* zinc-100 */
+  --secondary-foreground:#18181B;
+  --muted:#F4F4F5;
+  --muted-foreground:#71717A;    /* zinc-500 */
+  --accent:#F4F4F5;
+  --accent-foreground:#18181B;
+  --destructive:#EF4444;
+  --destructive-foreground:#FFFFFF;
+  --border:#E4E4E7;              /* zinc-200 */
+  --input:#E4E4E7;
+  --ring:#18181B;
+  --radius:0.5rem;
+  --shadow-sm:0 1px 2px 0 rgb(0 0 0 / .05);
+  --shadow:0 1px 3px 0 rgb(0 0 0 / .1),0 1px 2px -1px rgb(0 0 0 / .1);
+  --shadow-md:0 4px 6px -1px rgb(0 0 0 / .1),0 2px 4px -2px rgb(0 0 0 / .1);
+  --sans:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+  --serif:'Geist','Pretendard Variable',Pretendard,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--background);color:var(--foreground);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:transparent;color:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit}
+
+/* ───── SIDEBAR (gaisportmanager 스타일 — 288px / 90px 접기) ───── */
+.sidebar{position:fixed;left:0;top:0;height:100vh;width:288px;background:var(--card);box-shadow:var(--shadow-md);z-index:20;transition:width .3s ease-in-out;display:flex;flex-direction:column;overflow:hidden}
+.sidebar.collapsed{width:90px}
+.sidebar-toggle{position:absolute;top:20px;right:-12px;width:24px;height:24px;background:var(--card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-sm);z-index:21;transition:transform .3s ease}
+.sidebar.collapsed .sidebar-toggle{transform:rotate(180deg)}
+.sidebar-toggle svg{width:14px;height:14px;color:var(--muted-foreground)}
+.sidebar-inner{padding:16px 12px;height:100%;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+
+.brand{display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:4px;color:var(--foreground);transition:padding .3s ease}
+.sidebar.collapsed .brand{padding:8px 16px;justify-content:center}
+.brand svg{width:24px;height:24px;flex-shrink:0;color:var(--primary)}
+.brand h1{font-family:var(--serif);font-size:16px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;transition:opacity .3s ease,transform .3s ease}
+.sidebar.collapsed .brand h1{opacity:0;transform:translateX(-200px);width:0;display:none}
+
+.nav-group{padding-top:20px}
+.nav-group-label{font-size:12px;font-weight:500;color:var(--muted-foreground);padding:0 16px 8px;letter-spacing:.02em;white-space:nowrap;transition:opacity .3s ease;text-transform:capitalize}
+.sidebar.collapsed .nav-group-label{opacity:0;height:8px;display:flex;justify-content:center;align-items:center}
+.sidebar.collapsed .nav-group-label::after{content:"···";color:var(--muted-foreground);font-size:14px;opacity:1;display:block}
+.sidebar.collapsed .nav-group-label *{display:none}
+
+.menu-item{display:flex;align-items:center;width:100%;height:40px;padding:0 16px;border-radius:6px;font-size:14px;color:var(--foreground);transition:background .12s ease,color .12s ease;margin-bottom:4px;justify-content:flex-start;font-weight:500}
+.menu-item:hover{background:var(--accent)}
+.menu-item.active{background:var(--secondary);color:var(--foreground);font-weight:600}
+.menu-item svg{width:18px;height:18px;flex-shrink:0;margin-right:14px;color:var(--muted-foreground)}
+.menu-item.active svg{color:var(--primary)}
+.menu-item .label{flex:1;text-align:left;white-space:nowrap;transition:opacity .3s ease,transform .3s ease;overflow:hidden;text-overflow:ellipsis}
+.sidebar.collapsed .menu-item{justify-content:center;padding:0}
+.sidebar.collapsed .menu-item svg{margin-right:0}
+.sidebar.collapsed .menu-item .label,.sidebar.collapsed .menu-item .badge{opacity:0;transform:translateX(-200px);width:0;display:none}
+.menu-item .badge{font-family:var(--mono);font-size:10px;background:var(--secondary);color:var(--muted-foreground);padding:2px 6px;border-radius:3px;margin-left:8px;letter-spacing:.05em;font-weight:600}
+.menu-item.active .badge{background:var(--primary);color:var(--primary-foreground)}
+
+.sidebar-spacer{flex:1}
+.signout{display:flex;align-items:center;width:100%;height:40px;padding:0 16px;border:1px solid var(--border);border-radius:6px;font-size:14px;color:var(--foreground);background:var(--card);font-weight:500;justify-content:center;margin-top:20px;transition:all .12s ease}
+.signout:hover{background:var(--accent);border-color:var(--ring)}
+.signout svg{width:18px;height:18px;margin-right:14px;color:var(--muted-foreground)}
+.sidebar.collapsed .signout{padding:0}
+.sidebar.collapsed .signout svg{margin-right:0}
+.sidebar.collapsed .signout span{display:none}
+
+/* ───── MAIN ───── */
+.main{margin-left:288px;min-height:100vh;background:var(--background);transition:margin-left .3s ease}
+body.collapsed .main{margin-left:90px}
+
+/* Top navbar (sticky, h-14) */
+.navbar{position:sticky;top:0;z-index:10;height:56px;background:rgba(250,250,250,.95);backdrop-filter:blur(12px);box-shadow:var(--shadow-sm);display:flex;align-items:center;padding:0 32px;border-bottom:1px solid var(--border)}
+.navbar h1{font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.01em;flex:1}
+.navbar .right{display:flex;gap:8px;align-items:center}
+.navbar .status{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted-foreground);letter-spacing:.02em;margin-right:8px}
+.navbar .status .dot{width:6px;height:6px;background:#22C55E;border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ───── Buttons (shadcn) ───── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 16px;border-radius:6px;font-size:14px;font-weight:500;transition:all .12s ease;border:1px solid transparent;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn.default{background:var(--primary);color:var(--primary-foreground);border-color:var(--primary)}
+.btn.default:hover{background:#4F46E5;border-color:#4F46E5}
+.btn.outline{background:transparent;color:var(--foreground);border-color:var(--border)}
+.btn.outline:hover{background:var(--accent);border-color:var(--ring)}
+.btn.ghost{background:transparent;color:var(--foreground)}
+.btn.ghost:hover{background:var(--accent)}
+.btn.destructive{background:var(--destructive);color:var(--destructive-foreground);border-color:var(--destructive)}
+.btn.destructive:hover{background:#DC2626;border-color:#DC2626}
+.btn.sm{height:32px;padding:0 12px;font-size:13px}
+.btn.icon{width:36px;padding:0}
+.btn.icon.sm{width:32px}
+
+/* ───── Content area ───── */
+.content{padding:24px 32px;max-width:1280px;margin:0 auto}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted-foreground);margin-bottom:24px}
+.breadcrumb a:hover{color:var(--foreground);text-decoration:underline}
+.breadcrumb svg{width:14px;height:14px;opacity:.5}
+.breadcrumb .current{color:var(--foreground);font-weight:500}
+
+/* Page header */
+.page-head{margin-bottom:24px}
+.page-head h2{font-family:var(--serif);font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px}
+.page-head p{color:var(--muted-foreground);font-size:14px}
+
+/* ───── Tabs (filter) ───── */
+.tabs{display:inline-flex;background:var(--secondary);border-radius:8px;padding:4px;gap:2px;margin-bottom:16px}
+.tab{padding:6px 14px;border-radius:5px;font-size:13px;color:var(--muted-foreground);font-weight:500;transition:all .12s ease;display:flex;align-items:center;gap:8px}
+.tab:hover{color:var(--foreground)}
+.tab.active{background:var(--card);color:var(--foreground);box-shadow:var(--shadow-sm)}
+.tab .count{font-family:var(--mono);font-size:10px;background:var(--muted);padding:1px 6px;border-radius:3px;color:var(--muted-foreground);font-weight:600}
+.tab.active .count{background:var(--secondary)}
+
+/* Action bar */
+.action-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px}
+.search-box{display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--card);flex:1;max-width:320px}
+.search-box svg{width:16px;height:16px;color:var(--muted-foreground)}
+.search-box input{border:none;outline:none;flex:1;background:transparent;font-size:14px;color:var(--foreground)}
+.search-box input::placeholder{color:var(--muted-foreground)}
+
+/* ───── Card ───── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.card-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:16px}
+.card-header .title{font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.01em}
+.card-header .desc{font-size:13px;color:var(--muted-foreground);margin-top:2px}
+.card-content{padding:0}
+.card-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--background)}
+
+/* ───── Table ───── */
+.table{width:100%;border-collapse:collapse}
+.table thead{background:var(--background)}
+.table th{text-align:left;padding:12px 24px;font-size:12px;font-weight:500;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.table td{padding:14px 24px;border-bottom:1px solid var(--border);font-size:14px}
+.table tbody tr{transition:background .1s ease;cursor:pointer}
+.table tbody tr:hover{background:var(--accent)}
+.table tbody tr.editing{background:#EEF2FF}
+.table tbody tr:last-child td{border-bottom:none}
+.handle{color:var(--muted-foreground);font-size:14px;cursor:grab;width:30px;text-align:center;font-family:var(--mono)}
+.project-cell{display:flex;align-items:center;gap:12px}
+.project-cell .thumb{width:48px;height:36px;background:linear-gradient(135deg,#A1A1AA,#71717A);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-family:var(--mono);letter-spacing:.05em}
+.project-cell .thumb.featured{background:linear-gradient(135deg,#6366F1,#4F46E5)}
+.project-cell .info b{display:block;font-weight:600;font-size:14px;margin-bottom:2px}
+.project-cell .info small{display:block;color:var(--muted-foreground);font-size:12px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tags-cell{display:flex;gap:4px;flex-wrap:wrap}
+.badge-tag{font-family:var(--mono);font-size:10px;background:var(--secondary);padding:2px 7px;border-radius:3px;color:var(--muted-foreground);letter-spacing:.05em;font-weight:500}
+.badge-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500}
+.badge-status::before{content:"";width:6px;height:6px;border-radius:50%}
+.badge-status.live{color:#16A34A}
+.badge-status.live::before{background:#22C55E}
+.badge-status.draft{color:var(--muted-foreground)}
+.badge-status.draft::before{background:#A1A1AA}
+.badge-status.hidden{color:var(--destructive)}
+.badge-status.hidden::before{background:var(--destructive)}
+.year-cell{font-family:var(--mono);font-size:12px;color:var(--muted-foreground);text-align:right}
+.actions-cell{display:flex;gap:4px;justify-content:flex-end}
+
+/* ───── Editor (펼쳐진 폼) ───── */
+.editor{margin-top:24px}
+.editor-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 24px;gap:4px;background:var(--card)}
+.editor-tab{padding:14px 16px;font-size:14px;color:var(--muted-foreground);border-bottom:2px solid transparent;font-weight:500;transition:all .12s ease;display:flex;align-items:center;gap:8px}
+.editor-tab .flag{font-family:var(--mono);font-size:10px;background:var(--muted);padding:2px 6px;border-radius:3px;letter-spacing:.05em;font-weight:600}
+.editor-tab:hover{color:var(--foreground)}
+.editor-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.editor-tab.active .flag{background:var(--primary);color:var(--primary-foreground)}
+.editor-body{padding:24px}
+
+/* AI assist box */
+.ai-box{display:flex;gap:14px;align-items:center;padding:16px;background:linear-gradient(135deg,#EEF2FF,#FFFFFF);border:1px dashed var(--primary);border-radius:8px;margin-bottom:24px}
+.ai-box .ai-ic{width:36px;height:36px;background:var(--primary);color:var(--primary-foreground);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-box .ai-ic svg{width:18px;height:18px}
+.ai-box .ai-copy{flex:1}
+.ai-box .ai-copy b{display:block;font-weight:700;font-size:13px;color:var(--primary);margin-bottom:2px}
+.ai-box .ai-copy small{color:var(--muted-foreground);font-size:12px}
+
+/* Form fields */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-grid.full{grid-template-columns:1fr}
+.field{margin-bottom:20px}
+.field-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.field-label label{font-size:13px;font-weight:600}
+.field-label .req{color:var(--primary);font-size:11px;font-family:var(--mono);font-weight:500}
+.field-label .hint{color:var(--muted-foreground);font-size:11px;font-weight:400}
+.input,.textarea{width:100%;height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--card);color:var(--foreground);transition:border-color .12s ease,box-shadow .12s ease;font-family:var(--sans)}
+.textarea{height:auto;padding:8px 12px;min-height:96px;resize:vertical;line-height:1.6}
+.input:focus,.textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgb(99 102 241 / .12)}
+
+/* Tag input */
+.tag-input{display:flex;flex-wrap:wrap;gap:6px;padding:6px;border:1px solid var(--border);border-radius:6px;background:var(--card);min-height:36px;align-items:center}
+.tag-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;background:var(--foreground);color:var(--background);border-radius:4px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;font-weight:500}
+.tag-chip.indigo{background:var(--primary);color:var(--primary-foreground)}
+.tag-chip x{cursor:pointer;opacity:.7;font-family:var(--sans);font-size:14px;line-height:1}
+.tag-input input{border:none;outline:none;background:transparent;font-size:13px;padding:0 6px;min-width:80px;flex:1;height:24px}
+
+/* Upload */
+.upload{border:2px dashed var(--border);border-radius:8px;padding:32px 16px;text-align:center;background:var(--background);cursor:pointer;transition:all .15s ease}
+.upload:hover{border-color:var(--primary);background:#FAFAFF}
+.upload svg{width:32px;height:32px;color:var(--muted-foreground);margin-bottom:8px}
+.upload b{display:block;font-size:14px;margin-bottom:4px}
+.upload small{font-size:12px;color:var(--muted-foreground)}
+.uploaded{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.uploaded .item{width:96px;height:64px;background:linear-gradient(135deg,#6366F1,#4F46E5);border-radius:6px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-family:var(--mono);letter-spacing:.05em}
+.uploaded .item.placeholder{background:linear-gradient(135deg,#A1A1AA,#71717A)}
+.uploaded .item x{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--foreground);color:var(--card);border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--sans)}
+
+/* Toggle switch (shadcn) */
+.toggle-list{background:var(--background);border-radius:8px;padding:4px 16px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--border)}
+.toggle-row:first-child{border-top:none}
+.toggle-row .info{flex:1}
+.toggle-row .info b{font-size:13px;font-weight:600;display:block;margin-bottom:2px}
+.toggle-row .info small{font-size:12px;color:var(--muted-foreground)}
+.switch{position:relative;width:36px;height:20px;background:var(--input);border-radius:10px;cursor:pointer;transition:background .15s ease;flex-shrink:0}
+.switch.on{background:var(--primary)}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .15s ease;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.switch.on::after{left:18px}
+
+.editor-footer-meta{font-family:var(--mono);font-size:11px;color:var(--muted-foreground);letter-spacing:.02em;display:flex;align-items:center;gap:10px}
+.editor-footer-meta .sep{opacity:.4}
+
+/* Bottom info note */
+.info-note{margin-top:32px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px}
+.info-note .lbl{font-family:var(--mono);font-size:11px;color:var(--primary);letter-spacing:.1em;margin-bottom:8px;font-weight:600;text-transform:uppercase}
+.info-note p{font-size:13px;color:var(--muted-foreground);line-height:1.8}
+.info-note p b{color:var(--foreground);font-weight:600}
+
+@media (max-width:1100px){
+  .main{margin-left:90px}
+  .sidebar{width:90px}
+  .sidebar .label,.sidebar .badge,.sidebar h1,.sidebar .nav-group-label{opacity:0;transform:translateX(-200px);width:0;display:none}
+}
+@media (max-width:800px){
+  .main{margin-left:0}
+  .sidebar{transform:translateX(-100%)}
+}
+</style>
+</head>
+<body>
+
+<!-- SVG ICON SPRITE (lucide-style) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-panels" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></symbol>
+    <symbol id="i-chev-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chev-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+    <symbol id="i-brief" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  </defs>
+</svg>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('collapsed');document.body.classList.toggle('collapsed')">
+    <svg><use href="#i-chev-left"/></svg>
+  </button>
+  <div class="sidebar-inner">
+    <a href="#" class="brand">
+      <svg><use href="#i-panels"/></svg>
+      <h1>PORTFOLIO ADMIN</h1>
+    </a>
+
+    <div class="nav-group">
+      <p class="nav-group-label">Contents</p>
+      <button class="menu-item"><svg><use href="#i-home"/></svg><span class="label">Hero · 한 줄 소개</span><span class="badge">1</span></button>
+      <button class="menu-item"><svg><use href="#i-star"/></svg><span class="label">Featured 영웅</span><span class="badge">1</span></button>
+      <button class="menu-item active"><svg><use href="#i-list"/></svg><span class="label">Other Works</span><span class="badge">4</span></button>
+      <button class="menu-item"><svg><use href="#i-play"/></svg><span class="label">Currently Building</span><span class="badge">1</span></button>
+    </div>
+
+    <div class="nav-group">
+      <p class="nav-group-label">About</p>
+      <button class="menu-item"><svg><use href="#i-user"/></svg><span class="label">About 자기소개</span></button>
+      <button class="menu-item"><svg><use href="#i-cap"/></svg><span class="label">Education 학력</span><span class="badge">2</span></button>
+      <button class="menu-item"><svg><use href="#i-brief"/></svg><span class="label">Experience 경력</span><span class="badge">3</span></button>
+      <button class="menu-item"><svg><use href="#i-code"/></svg><span class="label">Skills 기술</span><span class="badge">10</span></button>
+    </div>
+
+    <div class="nav-group">
+      <p class="nav-group-label">Media</p>
+      <button class="menu-item"><svg><use href="#i-image"/></svg><span class="label">이미지 · 영상</span><span class="badge">12</span></button>
+    </div>
+
+    <div class="nav-group">
+      <p class="nav-group-label">Settings</p>
+      <button class="menu-item"><svg><use href="#i-globe"/></svg><span class="label">다국어 KR·JP·EN</span></button>
+      <button class="menu-item"><svg><use href="#i-settings"/></svg><span class="label">계정 · SEO</span></button>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <button class="signout">
+      <svg><use href="#i-logout"/></svg>
+      <span>Sign out</span>
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- NAVBAR (sticky h-14) -->
+  <header class="navbar">
+    <h1>Other Works</h1>
+    <div class="right">
+      <span class="status"><span class="dot"></span>자동저장됨 · 2분 전</span>
+      <button class="btn outline sm"><svg><use href="#i-eye"/></svg>미리보기</button>
+      <button class="btn default sm">변경사항 발행</button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="#">Home</a>
+      <svg><use href="#i-chev-right"/></svg>
+      <a href="#">Contents</a>
+      <svg><use href="#i-chev-right"/></svg>
+      <span class="current">Other Works · 그 외 작업</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-head">
+      <h2>Other Works 목록</h2>
+      <p>메인 사이트의 "그 외 작업" 섹션에 표시될 프로젝트. 드래그로 순서 변경, 행 클릭하면 편집 가능.</p>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="tabs">
+      <button class="tab active">전체 <span class="count">4</span></button>
+      <button class="tab">공개 <span class="count">3</span></button>
+      <button class="tab">초안 <span class="count">1</span></button>
+      <button class="tab">숨김 <span class="count">0</span></button>
+    </div>
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <div class="search-box">
+        <svg><use href="#i-search"/></svg>
+        <input type="text" placeholder="프로젝트 검색…" />
+      </div>
+      <button class="btn default"><svg><use href="#i-plus"/></svg>새 프로젝트 추가</button>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width:40px"></th>
+            <th>프로젝트</th>
+            <th>기술 태그</th>
+            <th>상태</th>
+            <th style="text-align:right">연도</th>
+            <th style="width:80px;text-align:right">액션</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="editing">
+            <td class="handle"><svg style="width:14px;height:14px;color:var(--muted-foreground)"><use href="#i-grip"/></svg></td>
+            <td>
+              <div class="project-cell">
+                <div class="thumb">shop</div>
+                <div class="info">
+                  <b>shop-nextjs</b>
+                  <small>Next.js 기반 쇼핑몰. 장바구니·결제 흐름까지 구현.</small>
+                </div>
+              </div>
+            </td>
+            <td><div class="tags-cell"><span class="badge-tag">NEXT</span><span class="badge-tag">TS</span><span class="badge-tag">TAILWIND</span></div></td>
+            <td><span class="badge-status live">공개</span></td>
+            <td class="year-cell">2024</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn ghost icon sm"><svg><use href="#i-pencil"/></svg></button>
+                <button class="btn ghost icon sm"><svg><use href="#i-more"/></svg></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="handle"><svg style="width:14px;height:14px;color:var(--muted-foreground)"><use href="#i-grip"/></svg></td>
+            <td>
+              <div class="project-cell">
+                <div class="thumb">voca</div>
+                <div class="info">
+                  <b>voca-react</b>
+                  <small>단어 암기 웹앱. 카드 인터랙션·로컬 상태 관리.</small>
+                </div>
+              </div>
+            </td>
+            <td><div class="tags-cell"><span class="badge-tag">REACT</span><span class="badge-tag">TS</span></div></td>
+            <td><span class="badge-status live">공개</span></td>
+            <td class="year-cell">2024</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn ghost icon sm"><svg><use href="#i-pencil"/></svg></button>
+                <button class="btn ghost icon sm"><svg><use href="#i-more"/></svg></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="handle"><svg style="width:14px;height:14px;color:var(--muted-foreground)"><use href="#i-grip"/></svg></td>
+            <td>
+              <div class="project-cell">
+                <div class="thumb">todo</div>
+                <div class="info">
+                  <b>todolist-nextjs</b>
+                  <small>Next.js 풀스택 투두. CRUD와 라우팅 구조 다지기.</small>
+                </div>
+              </div>
+            </td>
+            <td><div class="tags-cell"><span class="badge-tag">NEXT</span><span class="badge-tag">TS</span></div></td>
+            <td><span class="badge-status live">공개</span></td>
+            <td class="year-cell">2023</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn ghost icon sm"><svg><use href="#i-pencil"/></svg></button>
+                <button class="btn ghost icon sm"><svg><use href="#i-more"/></svg></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="handle"><svg style="width:14px;height:14px;color:var(--muted-foreground)"><use href="#i-grip"/></svg></td>
+            <td>
+              <div class="project-cell">
+                <div class="thumb">rank</div>
+                <div class="info">
+                  <b>mongodb-ranking</b>
+                  <small>MongoDB 기반 랭킹 사이트. DB 조작·집계 파이프라인.</small>
+                </div>
+              </div>
+            </td>
+            <td><div class="tags-cell"><span class="badge-tag">MONGO</span><span class="badge-tag">NODE</span></div></td>
+            <td><span class="badge-status draft">초안</span></td>
+            <td class="year-cell">2023</td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn ghost icon sm"><svg><use href="#i-pencil"/></svg></button>
+                <button class="btn ghost icon sm"><svg><use href="#i-more"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="card editor">
+      <div class="card-header">
+        <div>
+          <div class="title">shop-nextjs 편집 중 <span style="font-family:var(--mono);font-size:11px;color:var(--primary);background:#EEF2FF;padding:3px 8px;border-radius:4px;margin-left:8px;letter-spacing:.05em;font-weight:600">#002</span></div>
+          <div class="desc">왼쪽 행 클릭하면 여기 편집기가 바뀜</div>
+        </div>
+        <button class="btn ghost icon"><svg><use href="#i-trash"/></svg></button>
+      </div>
+
+      <!-- 언어 탭 -->
+      <div class="editor-tabs">
+        <button class="editor-tab active">한국어 <span class="flag">KR</span></button>
+        <button class="editor-tab">日本語 <span class="flag">JP</span></button>
+        <button class="editor-tab">English <span class="flag">EN</span></button>
+      </div>
+
+      <div class="editor-body">
+
+        <!-- AI -->
+        <div class="ai-box">
+          <div class="ai-ic"><svg><use href="#i-spark"/></svg></div>
+          <div class="ai-copy">
+            <b>AI 보조 작성</b>
+            <small>GitHub URL을 넣으면 AI가 README 읽고 한국어 케이스 스터디 초안을 생성. 너가 다듬어서 저장.</small>
+          </div>
+          <button class="btn outline sm"><svg><use href="#i-link"/></svg>URL → 초안 생성</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-label"><label>프로젝트 이름</label><span class="req">필수</span></div>
+            <input class="input" type="text" value="shop-nextjs" />
+          </div>
+          <div class="field">
+            <div class="field-label"><label>한 줄 설명</label><span class="hint">최대 60자</span></div>
+            <input class="input" type="text" value="Next.js 기반 쇼핑몰. 장바구니·결제 흐름까지 구현." />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><label>상세 설명</label><span class="hint">마크다운 지원</span></div>
+          <textarea class="textarea">Next.js 14 App Router 기반으로 만든 쇼핑몰. 상품 목록 / 장바구니 / 결제 흐름 / 관리자 라우팅까지 직접 구현했어.
+
+특히 신경 쓴 부분:
+- 서버 컴포넌트와 클라이언트 컴포넌트 경계 설계
+- 결제 단계 상태 관리 (낙관적 업데이트)
+- 관리자 페이지 권한 분리</textarea>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-label"><label>기술 태그</label></div>
+            <div class="tag-input">
+              <span class="tag-chip">Next.js <x>×</x></span>
+              <span class="tag-chip">TypeScript <x>×</x></span>
+              <span class="tag-chip">Tailwind <x>×</x></span>
+              <input type="text" placeholder="+ 태그 추가" />
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label"><label>연도</label></div>
+            <input class="input" type="text" value="2024" />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <div class="field-label"><label>GitHub URL</label></div>
+            <input class="input" type="text" value="https://github.com/Jiwon-iii/shop-nextjs-practice" />
+          </div>
+          <div class="field">
+            <div class="field-label"><label>라이브 URL</label><span class="hint">선택</span></div>
+            <input class="input" type="text" placeholder="https://..." />
+          </div>
+        </div>
+
+        <!-- Upload -->
+        <div class="field">
+          <div class="field-label"><label>썸네일 · 스크린샷</label><span class="hint">최대 5장 · 첫 번째가 카드 썸네일</span></div>
+          <div class="upload">
+            <svg><use href="#i-upload"/></svg>
+            <b>이미지 끌어다 놓기 또는 클릭해서 선택</b>
+            <small>PNG · JPG · GIF · 최대 5MB</small>
+          </div>
+          <div class="uploaded">
+            <div class="item">SCREEN<x>×</x></div>
+            <div class="item placeholder">SCREEN<x>×</x></div>
+          </div>
+        </div>
+
+        <!-- 노출 -->
+        <div class="field">
+          <div class="field-label"><label>노출 설정</label></div>
+          <div class="toggle-list">
+            <div class="toggle-row">
+              <div class="info"><b>사이트에 공개</b><small>OFF로 두면 어드민에만 보이고 사이트엔 노출 안 됨</small></div>
+              <div class="switch on"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="info"><b>Featured 후보로 표시</b><small>"영웅 프로젝트" 자리 비었을 때 자동 채움</small></div>
+              <div class="switch"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="info"><b>진행 중 (In Progress)</b><small>"Currently Building" 섹션에도 같이 노출</small></div>
+              <div class="switch"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <div class="editor-footer-meta">
+          ID <span class="sep">·</span> shop-nextjs
+          <span class="sep">·</span> 마지막 수정 2026-05-20 14:32
+          <span class="sep">·</span> 정렬 #2
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn ghost sm">취소</button>
+          <button class="btn outline sm">초안 저장</button>
+          <button class="btn default sm">저장 후 발행</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFO NOTE -->
+    <div class="info-note">
+      <div class="lbl">— 어드민 미리보기 안내</div>
+      <p>이 화면은 <b>gaisportmanager</b>의 shadcn UI · 사이드바 (288px / 90px 접기) · 그룹 라벨 (Contents·About·Media·Settings) · sticky navbar · breadcrumb · 테이블·카드 구조를 그대로 가져온 디자인이야. 좌상단 토글 버튼으로 사이드바 접고 펴기 가능. 실제로는 폼 입력 → MongoDB 저장 → 메인 사이트가 그 데이터로 자동 렌더링. AI 보조 작성 버튼은 GitHub URL 넣으면 AI가 README 읽고 한국어 케이스 스터디 초안 만들어주는 기능.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// 사이드바 메뉴 클릭
+document.querySelectorAll('.menu-item').forEach(el=>{
+  el.addEventListener('click',e=>{
+    if(e.currentTarget.classList.contains('active'))return;
+    document.querySelectorAll('.menu-item').forEach(e=>e.classList.remove('active'));
+    el.classList.add('active');
+  });
+});
+// 언어 탭
+document.querySelectorAll('.editor-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.editor-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+// 필터 탭
+document.querySelectorAll('.tabs .tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tabs .tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+// 토글 스위치
+document.querySelectorAll('.switch').forEach(sw=>{
+  sw.addEventListener('click',()=>sw.classList.toggle('on'));
+});
+</script>
+
+</body>
+</html>

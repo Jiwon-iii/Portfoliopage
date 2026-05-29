@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>미디어 아트 비교 — Shin Jiwon Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#F4F4F5; --surface:#FFFFFF;
+  --ink:#18181B; --muted:#71717A; --line:#E4E4E7;
+  --accent:#6366F1;
+  --sans:'Pretendard Variable',Pretendard,system-ui,sans-serif;
+  --serif:'Geist','Pretendard Variable',Pretendard,sans-serif;
+  --italic:'Instrument Serif',serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1400px;margin:0 auto;padding:48px 32px}
+header.top{margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+header.top h1{font-family:var(--serif);font-size:32px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+header.top p{color:var(--muted);font-size:14px;line-height:1.7;max-width:780px}
+header.top p b{color:var(--ink);font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
+
+.opt{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.opt:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.opt-head{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:var(--bg)}
+.opt-head .letter{font-family:var(--mono);font-size:14px;color:var(--accent);letter-spacing:.1em;font-weight:700}
+.opt-head .name{font-size:13px;color:var(--muted);font-family:var(--mono);letter-spacing:.05em}
+.opt-head .name b{color:var(--ink);font-weight:600;font-family:var(--sans);font-size:14px;letter-spacing:0;display:block}
+
+.art-box{aspect-ratio:4/5;background:var(--surface);position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.art-svg{width:100%;height:100%;display:block}
+.meta-tl,.meta-tr,.meta-bottom{position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:.1em;z-index:2;font-weight:600;color:var(--muted)}
+.meta-tl{top:14px;left:14px}
+.meta-tr{top:14px;right:14px}
+.meta-bottom{bottom:14px;left:14px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.meta-dot{display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;animation:metablink 1.5s ease-in-out infinite}
+@keyframes metablink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.opt-note{padding:16px 20px;font-size:13px;color:var(--muted);line-height:1.7}
+.opt-note b{color:var(--ink);font-weight:600;display:block;margin-bottom:4px}
+
+/* ─── shared dot grid pattern reused via inline SVG ─── */
+
+/* ═══════════════════════════════════════════════════
+   OPTION A — CURRENT · Wireframe Orb
+═══════════════════════════════════════════════════ */
+.orb-A{transform-origin:200px 250px;transform-box:fill-box;animation:spinA 80s linear infinite}
+@keyframes spinA{to{transform:rotate(360deg)}}
+.scan-A{animation:scanA 4s ease-in-out infinite alternate}
+@keyframes scanA{0%{transform:translateY(0)}100%{transform:translateY(498px)}}
+
+/* ═══════════════════════════════════════════════════
+   OPTION B — Face Recognition (AIsports 콜백)
+═══════════════════════════════════════════════════ */
+.scan-B{animation:scanB 3s ease-in-out infinite alternate}
+@keyframes scanB{0%{transform:translateY(0)}100%{transform:translateY(225px)}}
+.face-bracket-B{animation:bracketB 2s ease-in-out infinite}
+@keyframes bracketB{0%,100%{opacity:1}50%{opacity:.5}}
+.face-eye-B{animation:eyeB 2s ease-in-out infinite}
+@keyframes eyeB{0%,100%{opacity:1;r:3}50%{opacity:.6;r:4}}
+.percent-B{animation:pctB 4s ease-in-out infinite}
+@keyframes pctB{0%,100%{opacity:.7}50%{opacity:1}}
+
+/* ═══════════════════════════════════════════════════
+   OPTION C — Terminal Code Typing
+═══════════════════════════════════════════════════ */
+.term{background:#0F0F12;color:#E4E4E7;font-family:var(--mono);font-size:11px;line-height:1.7;padding:0;display:flex;flex-direction:column}
+.term-bar{padding:10px 14px;display:flex;align-items:center;gap:6px;background:#18181B;border-bottom:1px solid #27272A;flex-shrink:0}
+.term-bar .td{width:10px;height:10px;border-radius:50%}
+.term-bar .r{background:#EF4444}.term-bar .y{background:#EAB308}.term-bar .g{background:#22C55E}
+.term-bar .title{margin-left:12px;font-size:10px;color:#71717A;letter-spacing:.05em}
+.term-body{padding:14px 16px;flex:1;font-size:11px;letter-spacing:.02em}
+.term-body .line{white-space:nowrap;overflow:hidden;color:#D4D4D8}
+.term-body .prompt{color:#22C55E;margin-right:6px;font-weight:700}
+.term-body .muted{color:#52525B}
+.term-body .kw{color:#A78BFA}
+.term-body .str{color:#FCD34D}
+.term-body .fn{color:#60A5FA}
+.term-body .type{color:#34D399}
+.term-body .comment{color:#52525B;font-style:italic}
+.cursor-C{display:inline-block;width:7px;height:14px;background:#6366F1;animation:cursorblink 1s steps(2) infinite;vertical-align:-2px;margin-left:2px}
+@keyframes cursorblink{50%{opacity:0}}
+.type-1{animation:typein 1.5s steps(40) .5s both}
+.type-2{animation:typein 1.5s steps(40) 2.5s both}
+.type-3{animation:typein 1.5s steps(40) 4.5s both}
+.type-4{animation:typein 1s steps(20) 5.8s both}
+.type-5{animation:typein 1s steps(20) 6.8s both}
+.type-6{animation:typein 1s steps(20) 7.6s both}
+@keyframes typein{from{width:0}to{width:100%}}
+.term .meta-tl,.term .meta-tr,.term .meta-bottom{color:#71717A}
+.term .meta-bottom{color:#6366F1}
+
+/* ═══════════════════════════════════════════════════
+   OPTION D — Node Network / Constellation
+═══════════════════════════════════════════════════ */
+.net-line{animation:netline 4s ease-in-out infinite}
+@keyframes netline{0%,100%{opacity:.15}50%{opacity:.5}}
+.net-line:nth-child(2n){animation-delay:.5s}
+.net-line:nth-child(3n){animation-delay:1s}
+.net-line:nth-child(5n){animation-delay:1.5s}
+.net-dot{animation:netdot 2s ease-in-out infinite}
+.net-dot:nth-child(2n){animation-delay:.3s}
+.net-dot:nth-child(3n){animation-delay:.6s}
+.net-dot:nth-child(5n){animation-delay:.9s}
+@keyframes netdot{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ═══════════════════════════════════════════════════
+   OPTION E — Wave Dot Grid (Generative)
+═══════════════════════════════════════════════════ */
+.wave-row{transform-origin:center;animation:wave 4s ease-in-out infinite}
+.wave-row:nth-child(1){animation-delay:0s}
+.wave-row:nth-child(2){animation-delay:.2s}
+.wave-row:nth-child(3){animation-delay:.4s}
+.wave-row:nth-child(4){animation-delay:.6s}
+.wave-row:nth-child(5){animation-delay:.8s}
+.wave-row:nth-child(6){animation-delay:1s}
+.wave-row:nth-child(7){animation-delay:1.2s}
+.wave-row:nth-child(8){animation-delay:1.4s}
+.wave-row:nth-child(9){animation-delay:1.6s}
+.wave-row:nth-child(10){animation-delay:1.8s}
+.wave-row:nth-child(11){animation-delay:2s}
+@keyframes wave{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+/* ═══════════════════════════════════════════════════
+   OPTION F — Big JW Monogram with Draw Animation
+═══════════════════════════════════════════════════ */
+.jw-stroke{stroke-dasharray:1200;stroke-dashoffset:1200;animation:drawJW 5s ease-out infinite}
+@keyframes drawJW{
+  0%{stroke-dashoffset:1200}
+  50%,90%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:1200}
+}
+
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <h1>미디어 아트 후보 6개</h1>
+  <p>같은 박스 사이즈에 다른 그림 6개. 클릭하지 말고 그냥 비교만 하면 돼. 마음에 드는 거 알려주면 메인 미리보기에 적용할게. A는 현재 쓰고 있는 거 (참고용), B~F는 새 후보. <b>B</b>는 너의 AIsports 콜백, <b>C</b>는 터미널/코드, <b>D</b>는 노드 네트워크, <b>E</b>는 출렁이는 도트 그리드, <b>F</b>는 JW 모노그램 드로잉.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ─── A · CURRENT ─── -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="letter">A · 현재</span>
+      <span class="name"><b>Wireframe Orb</b>지구본 같은 와이어프레임</span>
+    </div>
+    <div class="art-box">
+      <div class="meta-tl">SYS_001 · 신지원.AI</div>
+      <div class="meta-tr">FRAME 0421 · v1.0</div>
+      <div class="meta-bottom"><span class="meta-dot"></span>GENERATIVE · SCANNING</div>
+      <svg class="art-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="dg-A" width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="0.7" fill="#A1A1AA" opacity="0.45"/>
+          </pattern>
+        </defs>
+        <rect width="400" height="500" fill="url(#dg-A)"/>
+        <g class="orb-A">
+          <ellipse cx="200" cy="250" rx="130" ry="130" fill="none" stroke="#6366F1" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="200" cy="250" rx="130" ry="42" fill="none" stroke="#6366F1" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="200" cy="250" rx="42" ry="130" fill="none" stroke="#6366F1" stroke-width="0.8" opacity="0.5"/>
+        </g>
+        <circle cx="200" cy="250" r="5" fill="#6366F1"/>
+        <line class="scan-A" x1="0" y1="0" x2="400" y2="0" stroke="#6366F1" stroke-width="1.5" opacity="0.7"/>
+      </svg>
+    </div>
+    <div class="opt-note">
+      <b>차분한 추상 — 지구본 같은 와이어프레임 + 스캔 라인</b>
+      에디토리얼 / 데이터 시각화 무드. 무난하고 차분하지만 살짝 일반적임.
+    </div>
+  </div>
+
+  <!-- ─── B · FACE RECOGNITION (AIsports 콜백) ─── -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="letter">B · 추천</span>
+      <span class="name"><b>Face Recognition</b>AIsports 콜백 · 얼굴 인식 스캔</span>
+    </div>
+    <div class="art-box">
+      <div class="meta-tl">FACE_001 · 신지원</div>
+      <div class="meta-tr">98.4% MATCH</div>
+      <div class="meta-bottom"><span class="meta-dot"></span>DETECTED · AIsports.AI</div>
+      <svg class="art-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="dg-B" width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="0.7" fill="#A1A1AA" opacity="0.45"/>
+          </pattern>
+        </defs>
+        <rect width="400" height="500" fill="url(#dg-B)"/>
+        <!-- Face oval -->
+        <ellipse cx="200" cy="240" rx="95" ry="125" fill="none" stroke="#6366F1" stroke-width="1.5" opacity="0.85"/>
+        <!-- Detection corner brackets -->
+        <g stroke="#6366F1" stroke-width="2.5" fill="none" class="face-bracket-B">
+          <path d="M90 130 L90 150 M90 130 L110 130"/>
+          <path d="M310 130 L310 150 M310 130 L290 130"/>
+          <path d="M90 360 L90 340 M90 360 L110 360"/>
+          <path d="M310 360 L310 340 M310 360 L290 360"/>
+        </g>
+        <!-- Eyes -->
+        <circle class="face-eye-B" cx="172" cy="215" r="3" fill="#6366F1"/>
+        <circle class="face-eye-B" cx="228" cy="215" r="3" fill="#6366F1"/>
+        <!-- Nose hint -->
+        <line x1="200" y1="230" x2="200" y2="260" stroke="#18181B" stroke-width="0.5" opacity="0.4"/>
+        <!-- Mouth indicator -->
+        <line x1="180" y1="290" x2="220" y2="290" stroke="#6366F1" stroke-width="1.2" opacity="0.6"/>
+        <!-- Reference cross-hairs -->
+        <line x1="200" y1="100" x2="200" y2="380" stroke="#6366F1" stroke-width="0.3" stroke-dasharray="4 4" opacity="0.35"/>
+        <line x1="80" y1="240" x2="320" y2="240" stroke="#6366F1" stroke-width="0.3" stroke-dasharray="4 4" opacity="0.35"/>
+        <!-- 측정 라벨 -->
+        <text x="115" y="125" font-family="JetBrains Mono" font-size="9" fill="#6366F1" font-weight="600">x:1.0 y:0.65</text>
+        <text x="285" y="125" font-family="JetBrains Mono" font-size="9" fill="#6366F1" text-anchor="end" font-weight="600">conf:0.984</text>
+        <!-- Scan line moving down -->
+        <line class="scan-B" x1="80" y1="130" x2="320" y2="130" stroke="#6366F1" stroke-width="1.8" opacity="0.85"/>
+      </svg>
+    </div>
+    <div class="opt-note">
+      <b>너의 영웅 프로젝트 시각화 — 얼굴 인식 박스</b>
+      AIsports 얼굴인식 출석이 바로 떠오르게 만드는 직접 콜백. 채용 담당자가 Featured까지 스크롤하지 않아도 "아 이 사람 AI 얼굴인식 하는구나" 이해함. <b>너만의 독창성 최강.</b>
+    </div>
+  </div>
+
+  <!-- ─── C · TERMINAL / CODE TYPING ─── -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="letter">C · 테크 무드</span>
+      <span class="name"><b>Terminal · Code</b>코드 타이핑되는 터미널</span>
+    </div>
+    <div class="art-box term">
+      <div class="term-bar">
+        <span class="td r"></span><span class="td y"></span><span class="td g"></span>
+        <span class="title">~/portfolio · jiwon</span>
+      </div>
+      <div class="term-body">
+        <div class="line type-1"><span class="prompt">$</span> npm run dev</div>
+        <div class="line type-2 muted">▲ Next.js 14.0.0 — ready in 1.2s</div>
+        <div class="line type-3 muted">- Local: http://localhost:3000</div>
+        <div class="line">&nbsp;</div>
+        <div class="line type-4"><span class="prompt">$</span> cat src/lib/ai.ts</div>
+        <div class="line type-5"><span class="kw">import</span> { openai } <span class="kw">from</span> <span class="str">"@/lib"</span></div>
+        <div class="line type-5">&nbsp;</div>
+        <div class="line type-6"><span class="kw">export async function</span> <span class="fn">describe</span>(</div>
+        <div class="line type-6">&nbsp;&nbsp;repo: <span class="type">string</span></div>
+        <div class="line type-6">): <span class="kw">Promise</span>&lt;<span class="type">string</span>&gt; {</div>
+        <div class="line type-6">&nbsp;&nbsp;<span class="comment">// AI가 README 읽고 초안 생성</span></div>
+        <div class="line type-6">&nbsp;&nbsp;<span class="kw">return await</span> openai.<span class="fn">complete</span>({</div>
+        <div class="line type-6">&nbsp;&nbsp;&nbsp;&nbsp;input: <span class="fn">fetchReadme</span>(repo)</div>
+        <div class="line type-6">&nbsp;&nbsp;})</div>
+        <div class="line type-6">}<span class="cursor-C"></span></div>
+      </div>
+    </div>
+    <div class="opt-note">
+      <b>"나 이런 코드 씁니다" 즉시 증명</b>
+      코드가 타이핑되며 AI 통합 함수가 보임. 개발자가 봤을 때 "오 이 사람 진짜 OpenAI API 만지네" 신뢰감 즉발. 비개발자가 봐도 "기술자 같은" 무드 박힘.
+    </div>
+  </div>
+
+  <!-- ─── D · NODE NETWORK ─── -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="letter">D · 추상</span>
+      <span class="name"><b>Node Network</b>별자리 같은 노드 네트워크</span>
+    </div>
+    <div class="art-box">
+      <div class="meta-tl">NETWORK · 28 NODES</div>
+      <div class="meta-tr">v2.0</div>
+      <div class="meta-bottom"><span class="meta-dot"></span>CONNECTED · 신지원.NET</div>
+      <svg class="art-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="dg-D" width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="0.7" fill="#A1A1AA" opacity="0.35"/>
+          </pattern>
+        </defs>
+        <rect width="400" height="500" fill="url(#dg-D)"/>
+
+        <g stroke="#6366F1" stroke-width="0.5" opacity="0.3">
+          <line class="net-line" x1="60" y1="80" x2="140" y2="140"/>
+          <line class="net-line" x1="140" y1="140" x2="240" y2="100"/>
+          <line class="net-line" x1="240" y1="100" x2="340" y2="160"/>
+          <line class="net-line" x1="140" y1="140" x2="200" y2="240"/>
+          <line class="net-line" x1="200" y1="240" x2="100" y2="280"/>
+          <line class="net-line" x1="200" y1="240" x2="310" y2="280"/>
+          <line class="net-line" x1="200" y1="240" x2="250" y2="350"/>
+          <line class="net-line" x1="250" y1="350" x2="160" y2="380"/>
+          <line class="net-line" x1="250" y1="350" x2="340" y2="420"/>
+          <line class="net-line" x1="160" y1="380" x2="80" y2="420"/>
+          <line class="net-line" x1="100" y1="280" x2="60" y2="380"/>
+          <line class="net-line" x1="60" y1="380" x2="80" y2="420"/>
+          <line class="net-line" x1="310" y1="280" x2="340" y2="160"/>
+          <line class="net-line" x1="60" y1="80" x2="240" y2="100"/>
+          <line class="net-line" x1="200" y1="240" x2="340" y2="160"/>
+          <line class="net-line" x1="200" y1="240" x2="60" y2="80"/>
+          <line class="net-line" x1="100" y1="280" x2="200" y2="240"/>
+          <line class="net-line" x1="310" y1="280" x2="200" y2="240"/>
+        </g>
+
+        <g fill="#6366F1">
+          <circle class="net-dot" cx="60" cy="80" r="2.5"/>
+          <circle class="net-dot" cx="140" cy="140" r="3.5"/>
+          <circle class="net-dot" cx="240" cy="100" r="2.5"/>
+          <circle class="net-dot" cx="340" cy="160" r="3"/>
+          <circle class="net-dot" cx="200" cy="240" r="6"/>
+          <circle class="net-dot" cx="100" cy="280" r="3"/>
+          <circle class="net-dot" cx="310" cy="280" r="3.5"/>
+          <circle class="net-dot" cx="250" cy="350" r="3"/>
+          <circle class="net-dot" cx="160" cy="380" r="2.5"/>
+          <circle class="net-dot" cx="340" cy="420" r="3"/>
+          <circle class="net-dot" cx="60" cy="380" r="2.5"/>
+          <circle class="net-dot" cx="80" cy="420" r="2"/>
+        </g>
+        <circle cx="200" cy="240" r="9" fill="none" stroke="#6366F1" stroke-width="1" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="opt-note">
+      <b>그래프 / 신경망 같은 인상</b>
+      AI·데이터·연결 같은 추상 키워드를 시각화. 깔끔하고 차분하지만 "AI 통합 풀스택" 메시지가 살짝 일반적임.
+    </div>
+  </div>
+
+  <!-- ─── E · WAVE DOT GRID ─── -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="letter">E · 제너러티브</span>
+      <span class="name"><b>Wave Grid</b>출렁이는 도트 그리드</span>
+    </div>
+    <div class="art-box">
+      <div class="meta-tl">GEN_002 · WAVE</div>
+      <div class="meta-tr">132 PTS</div>
+      <div class="meta-bottom"><span class="meta-dot"></span>OSCILLATING · 신지원.GEN</div>
+      <svg class="art-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+        <g class="wave-row"><circle cx="40" cy="80" r="2.5" fill="#6366F1"/><circle cx="80" cy="80" r="2.5" fill="#6366F1"/><circle cx="120" cy="80" r="2.5" fill="#6366F1"/><circle cx="160" cy="80" r="2.5" fill="#6366F1"/><circle cx="200" cy="80" r="2.5" fill="#6366F1"/><circle cx="240" cy="80" r="2.5" fill="#6366F1"/><circle cx="280" cy="80" r="2.5" fill="#6366F1"/><circle cx="320" cy="80" r="2.5" fill="#6366F1"/><circle cx="360" cy="80" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="120" r="2.5" fill="#6366F1"/><circle cx="80" cy="120" r="2.5" fill="#6366F1"/><circle cx="120" cy="120" r="2.5" fill="#6366F1"/><circle cx="160" cy="120" r="2.5" fill="#6366F1"/><circle cx="200" cy="120" r="2.5" fill="#6366F1"/><circle cx="240" cy="120" r="2.5" fill="#6366F1"/><circle cx="280" cy="120" r="2.5" fill="#6366F1"/><circle cx="320" cy="120" r="2.5" fill="#6366F1"/><circle cx="360" cy="120" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="160" r="2.5" fill="#6366F1"/><circle cx="80" cy="160" r="2.5" fill="#6366F1"/><circle cx="120" cy="160" r="2.5" fill="#6366F1"/><circle cx="160" cy="160" r="2.5" fill="#6366F1"/><circle cx="200" cy="160" r="2.5" fill="#6366F1"/><circle cx="240" cy="160" r="2.5" fill="#6366F1"/><circle cx="280" cy="160" r="2.5" fill="#6366F1"/><circle cx="320" cy="160" r="2.5" fill="#6366F1"/><circle cx="360" cy="160" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="200" r="2.5" fill="#6366F1"/><circle cx="80" cy="200" r="2.5" fill="#6366F1"/><circle cx="120" cy="200" r="2.5" fill="#6366F1"/><circle cx="160" cy="200" r="2.5" fill="#6366F1"/><circle cx="200" cy="200" r="2.5" fill="#6366F1"/><circle cx="240" cy="200" r="2.5" fill="#6366F1"/><circle cx="280" cy="200" r="2.5" fill="#6366F1"/><circle cx="320" cy="200" r="2.5" fill="#6366F1"/><circle cx="360" cy="200" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="240" r="2.5" fill="#6366F1"/><circle cx="80" cy="240" r="2.5" fill="#6366F1"/><circle cx="120" cy="240" r="2.5" fill="#6366F1"/><circle cx="160" cy="240" r="2.5" fill="#6366F1"/><circle cx="200" cy="240" r="2.5" fill="#6366F1"/><circle cx="240" cy="240" r="2.5" fill="#6366F1"/><circle cx="280" cy="240" r="2.5" fill="#6366F1"/><circle cx="320" cy="240" r="2.5" fill="#6366F1"/><circle cx="360" cy="240" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="280" r="2.5" fill="#6366F1"/><circle cx="80" cy="280" r="2.5" fill="#6366F1"/><circle cx="120" cy="280" r="2.5" fill="#6366F1"/><circle cx="160" cy="280" r="2.5" fill="#6366F1"/><circle cx="200" cy="280" r="2.5" fill="#6366F1"/><circle cx="240" cy="280" r="2.5" fill="#6366F1"/><circle cx="280" cy="280" r="2.5" fill="#6366F1"/><circle cx="320" cy="280" r="2.5" fill="#6366F1"/><circle cx="360" cy="280" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="320" r="2.5" fill="#6366F1"/><circle cx="80" cy="320" r="2.5" fill="#6366F1"/><circle cx="120" cy="320" r="2.5" fill="#6366F1"/><circle cx="160" cy="320" r="2.5" fill="#6366F1"/><circle cx="200" cy="320" r="2.5" fill="#6366F1"/><circle cx="240" cy="320" r="2.5" fill="#6366F1"/><circle cx="280" cy="320" r="2.5" fill="#6366F1"/><circle cx="320" cy="320" r="2.5" fill="#6366F1"/><circle cx="360" cy="320" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="360" r="2.5" fill="#6366F1"/><circle cx="80" cy="360" r="2.5" fill="#6366F1"/><circle cx="120" cy="360" r="2.5" fill="#6366F1"/><circle cx="160" cy="360" r="2.5" fill="#6366F1"/><circle cx="200" cy="360" r="2.5" fill="#6366F1"/><circle cx="240" cy="360" r="2.5" fill="#6366F1"/><circle cx="280" cy="360" r="2.5" fill="#6366F1"/><circle cx="320" cy="360" r="2.5" fill="#6366F1"/><circle cx="360" cy="360" r="2.5" fill="#6366F1"/></g>
+        <g class="wave-row"><circle cx="40" cy="400" r="2.5" fill="#6366F1"/><circle cx="80" cy="400" r="2.5" fill="#6366F1"/><circle cx="120" cy="400" r="2.5" fill="#6366F1"/><circle cx="160" cy="400" r="2.5" fill="#6366F1"/><circle cx="200" cy="400" r="2.5" fill="#6366F1"/><circle cx="240" cy="400" r="2.5" fill="#6366F1"/><circle cx="280" cy="400" r="2.5" fill="#6366F1"/><circle cx="320" cy="400" r="2.5" fill="#6366F1"/><circle cx="360" cy="400" r="2.5" fill="#6366F1"/></g>
+      </svg>
+    </div>
+    <div class="opt-note">
+      <b>출렁이는 도트 — 생명력 있는 추상</b>
+      행마다 시차 두고 위아래로 흔들림. 살아있는 듯한 느낌이지만 시각적으로 가벼움. 메시지 없이 "잘 만든 사이트" 감만 줌.
+    </div>
+  </div>
+
+  <!-- ─── F · JW MONOGRAM DRAW ─── -->
+  <div class="opt">
+    <div class="opt-head">
+      <span class="letter">F · 시그니처</span>
+      <span class="name"><b>JW Draw</b>JW 모노그램 드로잉</span>
+    </div>
+    <div class="art-box">
+      <div class="meta-tl">SIGNATURE · v1</div>
+      <div class="meta-tr">신지원 / SHIN JIWON</div>
+      <div class="meta-bottom"><span class="meta-dot"></span>DRAWING · 0.42s</div>
+      <svg class="art-svg" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="dg-F" width="14" height="14" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="7" r="0.7" fill="#A1A1AA" opacity="0.35"/>
+          </pattern>
+        </defs>
+        <rect width="400" height="500" fill="url(#dg-F)"/>
+        <!-- J letter -->
+        <path class="jw-stroke" d="M 130 130 L 130 320 Q 130 360 90 360 Q 60 360 60 330"
+          fill="none" stroke="#18181B" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- J top serif -->
+        <path class="jw-stroke" d="M 95 130 L 165 130"
+          fill="none" stroke="#18181B" stroke-width="14" stroke-linecap="round"/>
+        <!-- W letter (in indigo) -->
+        <path class="jw-stroke" d="M 200 130 L 230 370 L 280 230 L 330 370 L 360 130"
+          fill="none" stroke="#6366F1" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- baseline mark -->
+        <line x1="40" y1="410" x2="380" y2="410" stroke="#6366F1" stroke-width="0.5" stroke-dasharray="3 5" opacity="0.4"/>
+        <!-- 작은 숫자 -->
+        <text x="40" y="430" font-family="JetBrains Mono" font-size="9" fill="#71717A" letter-spacing="0.1em">2026</text>
+        <text x="360" y="430" font-family="JetBrains Mono" font-size="9" fill="#71717A" letter-spacing="0.1em" text-anchor="end">PORTFOLIO</text>
+      </svg>
+    </div>
+    <div class="opt-note">
+      <b>JW 모노그램이 천천히 그려짐</b>
+      잡지 표지의 이니셜처럼 큰 모노그램이 직접 그려지는 애니메이션. 가장 brand-identity 강한 선택. 단, "AI 통합 풀스택" 메시지는 폰트가 다 떠안아야 함.
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:48px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--muted);line-height:1.8">
+  <b style="color:var(--ink);font-weight:600;display:block;margin-bottom:4px">추천 순위 (내 판단)</b>
+  <b style="color:var(--accent)">1순위 B (얼굴 인식)</b> — 너의 영웅 프로젝트 AIsports를 시각화한 거라 정체성이 가장 강함.<br/>
+  <b style="color:var(--ink)">2순위 C (터미널 코드)</b> — 코드 자체를 시각 콘텐츠로 — 실제로 그 함수 안에 AI 통합 코드가 보임.<br/>
+  3순위 F (JW 모노그램) — 가장 brand-mark적이지만 AI 메시지는 약함.<br/>
+  4순위 D (노드 네트워크) — 깔끔하나 일반적.<br/>
+  5순위 E (도트 그리드) — 가장 가벼움.
+</div>
+</div>
+
+</body>
+</html>

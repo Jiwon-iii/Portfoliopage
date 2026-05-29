@@ -1,0 +1,40 @@
+import { NextResponse, type NextRequest } from "next/server"
+import { revalidatePath } from "next/cache"
+import { getWorkById, updateWork, deleteWork } from "@/lib/repo/works"
+import { requireAdmin, handleZodError } from "@/lib/api-auth"
+
+interface Ctx {
+  params: Promise<{ id: string }>
+}
+
+export async function GET(_req: NextRequest, { params }: Ctx) {
+  const { id } = await params
+  const work = await getWorkById(id)
+  if (!work) return NextResponse.json({ error: "찾을 수 없음" }, { status: 404 })
+  return NextResponse.json(work)
+}
+
+export async function PATCH(req: NextRequest, { params }: Ctx) {
+  const guard = await requireAdmin()
+  if (guard) return guard
+  const { id } = await params
+  try {
+    const body = await req.json()
+    const work = await updateWork(id, body)
+    if (!work) return NextResponse.json({ error: "찾을 수 없음" }, { status: 404 })
+    revalidatePath("/", "layout")
+    return NextResponse.json(work)
+  } catch (err) {
+    return handleZodError(err)
+  }
+}
+
+export async function DELETE(_req: NextRequest, { params }: Ctx) {
+  const guard = await requireAdmin()
+  if (guard) return guard
+  const { id } = await params
+  const ok = await deleteWork(id)
+  if (!ok) return NextResponse.json({ error: "찾을 수 없음" }, { status: 404 })
+  revalidatePath("/", "layout")
+  return NextResponse.json({ ok: true })
+}

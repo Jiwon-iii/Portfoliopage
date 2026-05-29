@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>색감 비교 — Shin Jiwon Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;background:#EFECE5;color:#1A1A1A;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1400px;margin:0 auto;padding:48px 32px}
+header{margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid #d4cfc3}
+header h1{font-family:'Geist',sans-serif;font-size:32px;font-weight:900;letter-spacing:-.03em;margin-bottom:8px}
+header p{color:#666;font-size:14px;line-height:1.7;max-width:780px}
+header p b{color:#1A1A1A;font-weight:600}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+
+/* Each preview card is a self-contained color world */
+.preview{border:1px solid #d4cfc3;overflow:hidden;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.preview:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.preview .head{padding:14px 20px;background:#1A1A1A;color:#fff;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em}
+.preview .head .letter{color:#C8FF3E;font-weight:600}
+.preview .head .name{opacity:.7}
+
+/* Hero rendering (shared structure, palette overridden per option) */
+.hero{padding:48px 32px 32px;position:relative}
+.hero .top{display:flex;justify-content:space-between;align-items:center;padding-bottom:16px;margin-bottom:32px;border-bottom:1px solid currentColor;opacity:1}
+.hero .top .brand{font-family:'Geist',sans-serif;font-weight:800;font-size:14px;letter-spacing:-.01em;display:flex;gap:8px;align-items:baseline}
+.hero .top .brand small{font-family:'JetBrains Mono',monospace;font-size:9px;opacity:.6;letter-spacing:.05em}
+.hero .top .lang{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;opacity:.7}
+.hero .top .lang b{font-weight:700;opacity:1}
+.hero .meta{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;opacity:.5;margin-bottom:16px}
+.hero h1{font-family:'Geist',sans-serif;font-size:88px;line-height:.9;font-weight:900;letter-spacing:-.06em;margin-bottom:4px}
+.hero .sub{font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;opacity:.55;margin-bottom:28px}
+.hero .tag-label{font-size:10px;letter-spacing:.1em;font-weight:600;margin-bottom:8px}
+.hero .tag{font-family:'Geist',sans-serif;font-size:16px;line-height:1.5;font-weight:600;letter-spacing:-.01em;margin-bottom:24px}
+.hero .tag em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400}
+.hero .side{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:16px;border-top:1px solid currentColor;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.05em}
+.hero .side div{display:flex;flex-direction:column;gap:2px}
+.hero .side div small{opacity:.5}
+.hero .side div b{font-weight:600}
+.hero .btnrow{display:flex;gap:8px;margin-top:20px}
+.hero .btn{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.05em;padding:8px 14px;border:1px solid currentColor;cursor:pointer}
+.hero .btn.fill{font-weight:600}
+
+/* Swatches under each preview */
+.preview .swatches{display:grid;grid-template-columns:repeat(6,1fr);background:#1A1A1A;padding:0}
+.preview .sw{aspect-ratio:1;padding:8px;font-family:'JetBrains Mono',monospace;font-size:8px;display:flex;align-items:flex-end;letter-spacing:.05em}
+
+/* Note */
+.preview .note{padding:16px 20px;font-size:12px;line-height:1.7;color:#444;background:#FFFFFF;border-top:1px solid #d4cfc3}
+.preview .note b{color:#1A1A1A;font-weight:600}
+.preview .note .pros{color:#2e7d44;font-weight:600;font-size:11px}
+.preview .note .cons{color:#C8412C;font-weight:600;font-size:11px}
+
+/* ── OPTION A · 현재 (Warm Cream + 朱) ── */
+.opt-a .hero{background:#FAF7F0;color:#1A1A1A}
+.opt-a .hero h1,.opt-a .hero .top .brand{color:#1A1A1A}
+.opt-a .hero .tag-label,.opt-a .hero .tag em{color:#C8412C}
+.opt-a .hero .top,.opt-a .hero .side{border-color:#E5DFD2}
+.opt-a .hero .btn{color:#1A1A1A;border-color:#1A1A1A}
+.opt-a .hero .btn.fill{background:#C8412C;color:#FFFFFF;border-color:#C8412C}
+
+/* ── OPTION B · Vercel 화이트 ── */
+.opt-b .hero{background:#FFFFFF;color:#0A0A0A}
+.opt-b .hero h1,.opt-b .hero .top .brand{color:#0A0A0A}
+.opt-b .hero .tag-label,.opt-b .hero .tag em{color:#0070F3}
+.opt-b .hero .top,.opt-b .hero .side{border-color:#E4E4E7}
+.opt-b .hero .btn{color:#0A0A0A;border-color:#0A0A0A}
+.opt-b .hero .btn.fill{background:#0A0A0A;color:#FFFFFF;border-color:#0A0A0A}
+
+/* ── OPTION C · Vercel 다크 ── */
+.opt-c .hero{background:#0A0A0A;color:#FAFAFA}
+.opt-c .hero h1,.opt-c .hero .top .brand{color:#FAFAFA}
+.opt-c .hero .tag-label,.opt-c .hero .tag em{color:#C8FF3E}
+.opt-c .hero .top,.opt-c .hero .side{border-color:#27272A}
+.opt-c .hero .btn{color:#FAFAFA;border-color:#FAFAFA}
+.opt-c .hero .btn.fill{background:#C8FF3E;color:#0A0A0A;border-color:#C8FF3E}
+
+/* ── OPTION D · 쿨 오프화이트 (Linear/Stripe) ── */
+.opt-d .hero{background:#F4F4F5;color:#18181B}
+.opt-d .hero h1,.opt-d .hero .top .brand{color:#18181B}
+.opt-d .hero .tag-label,.opt-d .hero .tag em{color:#6366F1}
+.opt-d .hero .top,.opt-d .hero .side{border-color:#E4E4E7}
+.opt-d .hero .btn{color:#18181B;border-color:#18181B}
+.opt-d .hero .btn.fill{background:#6366F1;color:#FFFFFF;border-color:#6366F1}
+
+/* ── OPTION E · 모노 검정·화이트 (브루털리스트) ── */
+.opt-e .hero{background:#FFFFFF;color:#000000}
+.opt-e .hero h1,.opt-e .hero .top .brand{color:#000000}
+.opt-e .hero .tag-label{color:#000000}
+.opt-e .hero .tag em{color:#000000;font-style:italic;background:#000000;color:#fff;padding:0 6px}
+.opt-e .hero .top,.opt-e .hero .side{border-color:#000000}
+.opt-e .hero .btn{color:#000000;border-color:#000000}
+.opt-e .hero .btn.fill{background:#000000;color:#FFFFFF;border-color:#000000}
+
+/* ── OPTION F · 따뜻 베이지 + 짙은 그린 ── */
+.opt-f .hero{background:#FAF7F0;color:#1A1A1A}
+.opt-f .hero h1,.opt-f .hero .top .brand{color:#1A1A1A}
+.opt-f .hero .tag-label,.opt-f .hero .tag em{color:#2E5E47}
+.opt-f .hero .top,.opt-f .hero .side{border-color:#E5DFD2}
+.opt-f .hero .btn{color:#1A1A1A;border-color:#1A1A1A}
+.opt-f .hero .btn.fill{background:#2E5E47;color:#FFFFFF;border-color:#2E5E47}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .hero h1{font-size:64px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>색감 비교 · 6가지 팔레트</h1>
+    <p>현재 사이트는 <b>따뜻한 크림 + 朱 액센트 (A)</b> 색감이야. "맘에 안 든다" 한 만큼 다른 방향 5개 준비. 같은 Hero 블록을 6가지 다른 색으로 보여줘. 색이 진짜로 화면에 깔렸을 때 어떤 느낌인지 비교해보자.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- A · 현재 -->
+    <div class="preview opt-a">
+      <div class="head"><span class="letter">A</span><span class="name">현재 · 따뜻한 크림 + 朱</span></div>
+      <div class="hero">
+        <div class="top"><div class="brand">신지원 <small>SHIN JIWON</small></div><div class="lang"><b>KR</b> / JP / EN</div></div>
+        <div class="meta">PORTFOLIO · 2026 · DEVELOPER</div>
+        <h1>신지원</h1>
+        <div class="sub">Shin Jiwon</div>
+        <div class="tag-label">— 한 줄 소개</div>
+        <div class="tag">Next.js로 풀스택 웹을 만들면서 거기에 <em>AI</em>를 박아넣는 개발자.</div>
+        <div class="side">
+          <div><small>거점</small><b>서울</b></div>
+          <div><small>분야</small><b>AI × 풀스택</b></div>
+          <div><small>상태</small><b>구직 중</b></div>
+        </div>
+        <div class="btnrow"><span class="btn fill">자세히 보기 →</span><span class="btn">깃허브 ↗</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#FAF7F0;color:#1a1a1a">#FAF7F0</div>
+        <div class="sw" style="background:#FFFFFF;color:#1a1a1a">#FFFFFF</div>
+        <div class="sw" style="background:#1A1A1A;color:#fff">#1A1A1A</div>
+        <div class="sw" style="background:#8B8680;color:#1a1a1a">#8B8680</div>
+        <div class="sw" style="background:#E5DFD2;color:#1a1a1a">#E5DFD2</div>
+        <div class="sw" style="background:#C8412C;color:#fff">#C8412C</div>
+      </div>
+      <div class="note">
+        <b>따뜻한 베이지 + 朱(주홍) 액센트.</b> 일본 에디토리얼 잔향이 가장 많이 남는 팔레트.
+        <div class="pros">✓ 차별화 강함. 호불호는 갈리지만 기억남</div>
+        <div class="cons">✗ 너가 "맘에 안 든다"고 한 색감</div>
+      </div>
+    </div>
+
+    <!-- B · Vercel 화이트 -->
+    <div class="preview opt-b">
+      <div class="head"><span class="letter">B</span><span class="name">Vercel 화이트 · 클린 테크</span></div>
+      <div class="hero">
+        <div class="top"><div class="brand">신지원 <small>SHIN JIWON</small></div><div class="lang"><b>KR</b> / JP / EN</div></div>
+        <div class="meta">PORTFOLIO · 2026 · DEVELOPER</div>
+        <h1>신지원</h1>
+        <div class="sub">Shin Jiwon</div>
+        <div class="tag-label">— 한 줄 소개</div>
+        <div class="tag">Next.js로 풀스택 웹을 만들면서 거기에 <em>AI</em>를 박아넣는 개발자.</div>
+        <div class="side">
+          <div><small>거점</small><b>서울</b></div>
+          <div><small>분야</small><b>AI × 풀스택</b></div>
+          <div><small>상태</small><b>구직 중</b></div>
+        </div>
+        <div class="btnrow"><span class="btn fill">자세히 보기 →</span><span class="btn">깃허브 ↗</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#FFFFFF;color:#0a0a0a">#FFFFFF</div>
+        <div class="sw" style="background:#FAFAFA;color:#0a0a0a">#FAFAFA</div>
+        <div class="sw" style="background:#0A0A0A;color:#fff">#0A0A0A</div>
+        <div class="sw" style="background:#71717A;color:#fff">#71717A</div>
+        <div class="sw" style="background:#E4E4E7;color:#0a0a0a">#E4E4E7</div>
+        <div class="sw" style="background:#0070F3;color:#fff">#0070F3</div>
+      </div>
+      <div class="note">
+        <b>순수 화이트 + 검정 + Vercel 블루.</b> Geist 폰트와 가장 매칭. Next.js·Linear·v0가 쓰는 톤.
+        <div class="pros">✓ 가장 깔끔. 테크 정체성 강함. Geist와 자연 매칭</div>
+        <div class="cons">✗ 가장 흔함. 다른 dev portfolio랑 비슷한 톤</div>
+      </div>
+    </div>
+
+    <!-- C · Vercel 다크 -->
+    <div class="preview opt-c">
+      <div class="head"><span class="letter">C</span><span class="name">Vercel 다크 · 강한 테크 무드</span></div>
+      <div class="hero">
+        <div class="top"><div class="brand">신지원 <small>SHIN JIWON</small></div><div class="lang"><b>KR</b> / JP / EN</div></div>
+        <div class="meta">PORTFOLIO · 2026 · DEVELOPER</div>
+        <h1>신지원</h1>
+        <div class="sub">Shin Jiwon</div>
+        <div class="tag-label">— 한 줄 소개</div>
+        <div class="tag">Next.js로 풀스택 웹을 만들면서 거기에 <em>AI</em>를 박아넣는 개발자.</div>
+        <div class="side">
+          <div><small>거점</small><b>서울</b></div>
+          <div><small>분야</small><b>AI × 풀스택</b></div>
+          <div><small>상태</small><b>구직 중</b></div>
+        </div>
+        <div class="btnrow"><span class="btn fill">자세히 보기 →</span><span class="btn">깃허브 ↗</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#0A0A0A;color:#fff">#0A0A0A</div>
+        <div class="sw" style="background:#171717;color:#fff">#171717</div>
+        <div class="sw" style="background:#FAFAFA;color:#0a0a0a">#FAFAFA</div>
+        <div class="sw" style="background:#A1A1AA;color:#0a0a0a">#A1A1AA</div>
+        <div class="sw" style="background:#27272A;color:#fff">#27272A</div>
+        <div class="sw" style="background:#C8FF3E;color:#0a0a0a">#C8FF3E</div>
+      </div>
+      <div class="note">
+        <b>검정 + 흰 + 라임 액센트.</b> 다크 모드 기본. AI/테크 회사 portfolio 자주 가는 톤.
+        <div class="pros">✓ 강한 테크 임팩트. 라임 액센트가 시각적 기억 박힘</div>
+        <div class="cons">✗ 사진/이미지 포트폴리오엔 부적합. 다크모드 호불호 있음</div>
+      </div>
+    </div>
+
+    <!-- D · 쿨 오프화이트 (Linear) -->
+    <div class="preview opt-d">
+      <div class="head"><span class="letter">D</span><span class="name">쿨 오프화이트 · Linear 무드</span></div>
+      <div class="hero">
+        <div class="top"><div class="brand">신지원 <small>SHIN JIWON</small></div><div class="lang"><b>KR</b> / JP / EN</div></div>
+        <div class="meta">PORTFOLIO · 2026 · DEVELOPER</div>
+        <h1>신지원</h1>
+        <div class="sub">Shin Jiwon</div>
+        <div class="tag-label">— 한 줄 소개</div>
+        <div class="tag">Next.js로 풀스택 웹을 만들면서 거기에 <em>AI</em>를 박아넣는 개발자.</div>
+        <div class="side">
+          <div><small>거점</small><b>서울</b></div>
+          <div><small>분야</small><b>AI × 풀스택</b></div>
+          <div><small>상태</small><b>구직 중</b></div>
+        </div>
+        <div class="btnrow"><span class="btn fill">자세히 보기 →</span><span class="btn">깃허브 ↗</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#F4F4F5;color:#18181b">#F4F4F5</div>
+        <div class="sw" style="background:#FFFFFF;color:#18181b">#FFFFFF</div>
+        <div class="sw" style="background:#18181B;color:#fff">#18181B</div>
+        <div class="sw" style="background:#71717A;color:#fff">#71717A</div>
+        <div class="sw" style="background:#E4E4E7;color:#18181b">#E4E4E7</div>
+        <div class="sw" style="background:#6366F1;color:#fff">#6366F1</div>
+      </div>
+      <div class="note">
+        <b>차가운 회백 + 인디고 액센트.</b> Linear·Stripe·Notion 무드. 차분하고 세련됨.
+        <div class="pros">✓ 세련되고 차분. SaaS·B2B 느낌. 너무 튀지 않음</div>
+        <div class="cons">✗ 따뜻함 0. 개발자 portfolio엔 정장 같은 느낌일 수도</div>
+      </div>
+    </div>
+
+    <!-- E · 모노 -->
+    <div class="preview opt-e">
+      <div class="head"><span class="letter">E</span><span class="name">순수 모노 · 검정·화이트만</span></div>
+      <div class="hero">
+        <div class="top"><div class="brand">신지원 <small>SHIN JIWON</small></div><div class="lang"><b>KR</b> / JP / EN</div></div>
+        <div class="meta">PORTFOLIO · 2026 · DEVELOPER</div>
+        <h1>신지원</h1>
+        <div class="sub">Shin Jiwon</div>
+        <div class="tag-label">— 한 줄 소개</div>
+        <div class="tag">Next.js로 풀스택 웹을 만들면서 거기에 <em>AI</em>를 박아넣는 개발자.</div>
+        <div class="side">
+          <div><small>거점</small><b>서울</b></div>
+          <div><small>분야</small><b>AI × 풀스택</b></div>
+          <div><small>상태</small><b>구직 중</b></div>
+        </div>
+        <div class="btnrow"><span class="btn fill">자세히 보기 →</span><span class="btn">깃허브 ↗</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#FFFFFF;color:#000">#FFFFFF</div>
+        <div class="sw" style="background:#F5F5F5;color:#000">#F5F5F5</div>
+        <div class="sw" style="background:#000000;color:#fff">#000000</div>
+        <div class="sw" style="background:#888888;color:#fff">#888888</div>
+        <div class="sw" style="background:#E5E5E5;color:#000">#E5E5E5</div>
+        <div class="sw" style="background:#000000;color:#fff">#000 (액센트 없음)</div>
+      </div>
+      <div class="note">
+        <b>흑백만. 액센트 색 없음.</b> 강조는 검정 박스·언더라인·타이포로만. 브루털리스트 / 디자이너 스타일.
+        <div class="pros">✓ 어디서도 안 본 느낌. 타이포·레이아웃 자체로 승부</div>
+        <div class="cons">✗ 호불호 가장 강함. "재미없다"고 느껴질 수도</div>
+      </div>
+    </div>
+
+    <!-- F · 베이지 유지 + 액센트만 그린 -->
+    <div class="preview opt-f">
+      <div class="head"><span class="letter">F</span><span class="name">따뜻 베이지 + 짙은 그린 (현재 베이스만 유지)</span></div>
+      <div class="hero">
+        <div class="top"><div class="brand">신지원 <small>SHIN JIWON</small></div><div class="lang"><b>KR</b> / JP / EN</div></div>
+        <div class="meta">PORTFOLIO · 2026 · DEVELOPER</div>
+        <h1>신지원</h1>
+        <div class="sub">Shin Jiwon</div>
+        <div class="tag-label">— 한 줄 소개</div>
+        <div class="tag">Next.js로 풀스택 웹을 만들면서 거기에 <em>AI</em>를 박아넣는 개발자.</div>
+        <div class="side">
+          <div><small>거점</small><b>서울</b></div>
+          <div><small>분야</small><b>AI × 풀스택</b></div>
+          <div><small>상태</small><b>구직 중</b></div>
+        </div>
+        <div class="btnrow"><span class="btn fill">자세히 보기 →</span><span class="btn">깃허브 ↗</span></div>
+      </div>
+      <div class="swatches">
+        <div class="sw" style="background:#FAF7F0;color:#1a1a1a">#FAF7F0</div>
+        <div class="sw" style="background:#FFFFFF;color:#1a1a1a">#FFFFFF</div>
+        <div class="sw" style="background:#1A1A1A;color:#fff">#1A1A1A</div>
+        <div class="sw" style="background:#8B8680;color:#1a1a1a">#8B8680</div>
+        <div class="sw" style="background:#E5DFD2;color:#1a1a1a">#E5DFD2</div>
+        <div class="sw" style="background:#2E5E47;color:#fff">#2E5E47</div>
+      </div>
+      <div class="note">
+        <b>현재 베이지 그대로 + 액센트만 朱 → 짙은 그린.</b> 따뜻함은 유지하되 일본 향 빼고 자연스러움 더하기.
+        <div class="pros">✓ 현재 색감 기본 톤은 유지. 朱(일본 향)만 빼는 가장 작은 변화</div>
+        <div class="cons">✗ 베이지 자체가 싫으면 의미 없음</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
