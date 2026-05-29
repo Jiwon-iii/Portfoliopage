@@ -18,7 +18,6 @@ import type { Work, WorkType, WorkStatus, WorkSection } from "@/lib/schemas/work
 type I18nValue = { ko?: string | null; ja?: string | null; en?: string | null }
 
 type FormState = {
-  slug: string
   type: WorkType
   status: WorkStatus
   order: number
@@ -35,7 +34,6 @@ type FormState = {
 
 function initialFromWork(w?: Work | null): FormState {
   return {
-    slug: w?.slug ?? "",
     type: w?.type ?? "general",
     status: w?.status ?? "completed",
     order: w?.order ?? 0,
@@ -76,10 +74,6 @@ export function WorkForm({ work }: { work?: Work | null }) {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!state.slug.trim()) {
-      toast.error("slug 는 필수입니다 (소문자·숫자·하이픈)")
-      return
-    }
     if (!state.title.ko.trim()) {
       toast.error("제목 (한국어) 는 필수입니다")
       return
@@ -87,7 +81,6 @@ export function WorkForm({ work }: { work?: Work | null }) {
     setSaving(true)
     try {
       const payload = {
-        slug: state.slug,
         type: state.type,
         status: state.status,
         order: state.order,
@@ -140,18 +133,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
       <AdminLangBar />
       {/* 메타 */}
       <Card className="p-6 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="slug">slug <span className="text-primary text-xs font-mono ml-1">필수</span></Label>
-            <Input
-              id="slug"
-              value={state.slug}
-              onChange={(e) => set("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
-              placeholder="aisports"
-              disabled={isEdit}
-            />
-            <p className="text-xs text-muted-foreground">URL 식별자 (수정 불가)</p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="type">분류</Label>
             <select
@@ -350,7 +332,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
       {/* 푸터: 저장/삭제 */}
       <div className="flex justify-between items-center sticky bottom-0 bg-background py-4 border-t border-border">
         <div className="text-xs text-muted-foreground font-mono">
-          {isEdit ? `편집 중: ${work!.slug}` : "새 프로젝트 생성"}
+          {isEdit ? `편집 중: ${work!.title.ko}` : "새 프로젝트 생성"}
         </div>
         <div className="flex gap-2">
           {isEdit && (

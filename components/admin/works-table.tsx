@@ -89,7 +89,7 @@ export function WorksTable({ works }: { works: Work[] }) {
           <TableRow>
             <TableHead className="w-10"></TableHead>
             <TableHead className="w-12">순서</TableHead>
-            <TableHead>제목 / slug</TableHead>
+            <TableHead>제목</TableHead>
             <TableHead>분류</TableHead>
             <TableHead>기술</TableHead>
             <TableHead>상태</TableHead>
@@ -137,7 +137,6 @@ export function WorksTable({ works }: { works: Work[] }) {
                 <TableCell className="font-mono text-xs text-muted-foreground">{i + 1}</TableCell>
                 <TableCell>
                   <div className="font-semibold text-sm">{w.title.ko}</div>
-                  <div className="text-xs text-muted-foreground font-mono mt-0.5">{w.slug}</div>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">

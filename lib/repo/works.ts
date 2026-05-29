@@ -68,12 +68,6 @@ export async function listWorks(filter: { type?: WorkType; publishedOnly?: boole
   return docs.map((d) => toClient(d as never))
 }
 
-export async function getWorkBySlug(slug: string): Promise<Work | null> {
-  const db = await getDb()
-  const doc = await db.collection(COLLECTION).findOne({ slug })
-  return doc ? toClient(doc as never) : null
-}
-
 export async function getWorkById(id: string): Promise<Work | null> {
   if (!ObjectId.isValid(id)) return null
   const db = await getDb()
@@ -119,6 +113,5 @@ export async function reorderWorks(ids: string[]): Promise<void> {
 /** 인덱스 확보 (서버 시작 시 한 번 호출). */
 export async function ensureIndexes() {
   const db = await getDb()
-  await db.collection(COLLECTION).createIndex({ slug: 1 }, { unique: true })
   await db.collection(COLLECTION).createIndex({ type: 1, order: 1, published: 1 })
 }

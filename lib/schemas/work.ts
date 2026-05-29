@@ -25,11 +25,6 @@ export const workSection = z.object({
 export type WorkSection = z.infer<typeof workSection>
 
 const baseShape = z.object({
-  slug: z
-    .string()
-    .min(1)
-    .max(80)
-    .regex(/^[a-z0-9-]+$/, "소문자·숫자·하이픈만"),
   type: workType,
   status: workStatus.default("completed"),
   order: z.number().int().nonnegative().default(0),

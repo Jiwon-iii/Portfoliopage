@@ -1,4 +1,4 @@
-import { GitBranch, ArrowUpRight } from "lucide-react"
+import { GitBranch, ArrowUpRight, Lock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { ProjectImageSlider } from "@/components/site/project-image-slider"
 import { pickLang, type Lang } from "@/lib/i18n"
