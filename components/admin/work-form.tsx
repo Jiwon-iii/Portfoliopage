@@ -12,11 +12,12 @@ import { Sparkles, Trash2 } from "lucide-react"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
 import { TagInput } from "@/components/admin/tag-input"
 import { ImageUpload, type UploadedImage } from "@/components/admin/image-upload"
-import type { Work, WorkType } from "@/lib/schemas/work"
+import type { Work, WorkType, WorkStatus } from "@/lib/schemas/work"
 
 type FormState = {
   slug: string
   type: WorkType
+  status: WorkStatus
   order: number
   title: { ko: string; ja?: string | null; en?: string | null }
   tagline: { ko?: string | null; ja?: string | null; en?: string | null }
@@ -30,13 +31,13 @@ type FormState = {
   liveUrl: string
   images: UploadedImage[]
   published: boolean
-  featuredCandidate: boolean
 }
 
 function initialFromWork(w?: Work | null): FormState {
   return {
     slug: w?.slug ?? "",
-    type: w?.type ?? "other",
+    type: w?.type ?? "general",
+    status: w?.status ?? "completed",
     order: w?.order ?? 0,
     title: w?.title ?? { ko: "" },
     tagline: w?.tagline ?? { ko: "" },
@@ -50,7 +51,6 @@ function initialFromWork(w?: Work | null): FormState {
     liveUrl: w?.liveUrl ?? "",
     images: w?.images ?? [],
     published: w?.published ?? true,
-    featuredCandidate: false,
   }
 }
 
@@ -59,7 +59,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
   const [state, setState] = useState<FormState>(initialFromWork(work))
   const [saving, setSaving] = useState(false)
   const isEdit = !!work
-  const isFeatured = state.type === "featured"
+  const isGeneral = state.type === "general"
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => setState((s) => ({ ...s, [key]: value }))
 
@@ -78,13 +78,14 @@ export function WorkForm({ work }: { work?: Work | null }) {
       const payload = {
         slug: state.slug,
         type: state.type,
+        status: state.status,
         order: state.order,
         title: state.title,
         tagline: state.tagline,
         description: state.description,
-        problem: isFeatured ? state.problem : undefined,
-        approach: isFeatured ? state.approach : undefined,
-        outcome: isFeatured ? state.outcome : undefined,
+        problem: isGeneral ? state.problem : undefined,
+        approach: isGeneral ? state.approach : undefined,
+        outcome: isGeneral ? state.outcome : undefined,
         techs: state.techs,
         year: state.year || undefined,
         githubUrl: state.githubUrl || "",
@@ -150,10 +151,8 @@ export function WorkForm({ work }: { work?: Work | null }) {
               onChange={(e) => set("type", e.target.value as WorkType)}
               className="w-full h-9 px-3 border border-input rounded-md bg-background text-sm"
             >
-              <option value="featured">Featured (영웅 — 메인 프로젝트)</option>
-              <option value="other">Other (메인 프로젝트, 상세)</option>
-              <option value="practice">Practice (연습·간략 리스트)</option>
-              <option value="building">Currently Building (진행 중)</option>
+              <option value="general">일반 (대표 / 상세 프로젝트)</option>
+              <option value="practice">연습 (간략 리스트)</option>
             </select>
           </div>
           <div className="space-y-2">
@@ -167,6 +166,21 @@ export function WorkForm({ work }: { work?: Work | null }) {
               onChange={(e) => set("year", e.target.value ? Number(e.target.value) : undefined)}
               placeholder="2024"
             />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="status">상태</Label>
+            <select
+              id="status"
+              value={state.status}
+              onChange={(e) => set("status", e.target.value as WorkStatus)}
+              className="w-full h-9 px-3 border border-input rounded-md bg-background text-sm"
+            >
+              <option value="completed">완료</option>
+              <option value="in-progress">진행 중</option>
+            </select>
+            <p className="text-xs text-muted-foreground">진행 중이면 사이트에 진행 중 배지가 표시됩니다.</p>
           </div>
         </div>
       </Card>
@@ -194,12 +208,12 @@ export function WorkForm({ work }: { work?: Work | null }) {
         />
       </Card>
 
-      {/* Featured 전용: PROBLEM / APPROACH / OUTCOME */}
-      {isFeatured && (
+      {/* 일반 전용: PROBLEM / APPROACH / OUTCOME (선택) */}
+      {isGeneral && (
         <Card className="p-6 space-y-5 border-primary/40">
           <div className="text-xs text-primary font-mono tracking-wider font-semibold flex items-center gap-2">
             <Sparkles className="h-3.5 w-3.5" />
-            FEATURED 전용 — 케이스 스터디
+            케이스 스터디 (선택)
           </div>
           <I18nTabs label="문제 (PROBLEM)" value={state.problem} onChange={(v) => set("problem", v)} />
           <I18nTabs label="접근 (APPROACH)" value={state.approach} onChange={(v) => set("approach", v)} />
@@ -274,7 +288,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
       {/* 푸터: 저장/삭제 */}
       <div className="flex justify-between items-center sticky bottom-0 bg-background py-4 border-t border-border">
         <div className="text-xs text-muted-foreground font-mono">
-          {isEdit ? `편집 중: ${work!.slug}` : "새 작품 생성"}
+          {isEdit ? `편집 중: ${work!.slug}` : "새 프로젝트 생성"}
         </div>
         <div className="flex gap-2">
           {isEdit && (

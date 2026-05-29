@@ -8,10 +8,10 @@ export default async function HeroAdminPage() {
   const hero = await getHero().catch(() => null)
   return (
     <>
-      <AdminNavbar title="Hero" />
+      <AdminNavbar title="대표 소개" />
       <main className="max-w-5xl mx-auto px-8 py-8">
         <div className="mb-6">
-          <h2 className="font-serif text-3xl font-extrabold tracking-tight">Hero · 한 줄 소개</h2>
+          <h2 className="font-serif text-3xl font-extrabold tracking-tight">대표 소개</h2>
           <p className="text-muted-foreground text-sm mt-1">메인 사이트 최상단에 표시될 정보.</p>
         </div>
         <HeroForm initial={hero} />

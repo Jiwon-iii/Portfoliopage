@@ -1,52 +1,112 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams, useRouter } from "next/navigation"
 import {
-  PanelsTopLeft, Home, Star, List, Play, User, GraduationCap,
-  Briefcase, Code2, Image as ImageIcon, Globe, Settings, LogOut, Layers,
+  PanelsTopLeft, Home, List, User, GraduationCap,
+  Briefcase, Code2, LogOut, Layers,
+  ChevronDown, FolderKanban,
 } from "lucide-react"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
-const GROUPS = [
+type Item = {
+  href: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+}
+
+type Group = {
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  /** 부모 라벨 클릭 시 이동할 URL. 생략하면 펼침/접힘만 동작. */
+  href?: string
+  children: Item[]
+}
+
+type Section = {
+  label: string
+  items: Array<Item | Group>
+}
+
+const SECTIONS: Section[] = [
   {
-    label: "Contents",
+    label: "콘텐츠",
     items: [
-      { href: "/admin/hero", label: "Hero · 한 줄 소개", icon: Home },
-      { href: "/admin/works?type=featured", label: "Featured 영웅", icon: Star },
-      { href: "/admin/works?type=other", label: "프로젝트 (상세)", icon: List },
-      { href: "/admin/works?type=practice", label: "그 외 프로젝트 (간략)", icon: Layers },
-      { href: "/admin/works?type=building", label: "Currently Building", icon: Play },
+      { href: "/admin/hero", label: "대표 소개", icon: Home },
+      {
+        label: "프로젝트",
+        icon: FolderKanban,
+        href: "/admin/works",
+        children: [
+          { href: "/admin/works?type=general", label: "일반", icon: List },
+          { href: "/admin/works?type=practice", label: "연습", icon: Layers },
+        ],
+      },
     ],
   },
   {
-    label: "About",
+    label: "소개",
     items: [
-      { href: "/admin/about", label: "About 자기소개", icon: User },
-      { href: "/admin/education", label: "Education 학력", icon: GraduationCap },
-      { href: "/admin/experience", label: "Experience 경력", icon: Briefcase },
-      { href: "/admin/skills", label: "Skills 기술", icon: Code2 },
-    ],
-  },
-  {
-    label: "Media",
-    items: [{ href: "/admin/media", label: "이미지 · 영상", icon: ImageIcon }],
-  },
-  {
-    label: "Settings",
-    items: [
-      { href: "/admin/settings/languages", label: "다국어 KR·JP·EN", icon: Globe },
-      { href: "/admin/settings/account", label: "계정 · SEO", icon: Settings },
+      { href: "/admin/about", label: "자기소개", icon: User },
+      { href: "/admin/education", label: "학력", icon: GraduationCap },
+      { href: "/admin/experience", label: "경력", icon: Briefcase },
+      { href: "/admin/skills", label: "기술", icon: Code2 },
     ],
   },
 ]
 
+function isGroup(x: Item | Group): x is Group {
+  return "children" in x
+}
+
+/**
+ * 현재 pathname + query 가 item.href 와 매칭되는지.
+ * - 쿼리 있는 href ("/admin/works?type=featured") → pathname 동일 + type 동일해야 active
+ * - 쿼리 없는 href ("/admin/hero") → pathname startsWith
+ */
+function isItemActive(href: string, pathname: string, search: URLSearchParams): boolean {
+  const [path, query] = href.split("?")
+  if (query) {
+    if (pathname !== path) return false
+    const target = new URLSearchParams(query)
+    for (const [k, v] of target.entries()) {
+      if (search.get(k) !== v) return false
+    }
+    return true
+  }
+  if (path === "/admin") return pathname === "/admin"
+  return pathname === path || pathname.startsWith(path + "/")
+}
+
 export function AdminSidebar() {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const router = useRouter()
+
+  // 어떤 그룹이 펼쳐져 있는지 (label 기준). 페이지 진입 시 active 자식 포함된 그룹은 자동으로 펼침.
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
+
+  // 페이지 바뀔 때 active 자식 가진 그룹 또는 부모 자체가 active 면 자동으로 펼침
+  useEffect(() => {
+    const next: Record<string, boolean> = {}
+    SECTIONS.forEach((section) => {
+      section.items.forEach((item) => {
+        if (isGroup(item)) {
+          const selfActive = item.href ? isItemActive(item.href, pathname, searchParams) : false
+          const anyChildActive = item.children.some((c) => isItemActive(c.href, pathname, searchParams))
+          if (selfActive || anyChildActive) next[item.label] = true
+        }
+      })
+    })
+    setOpenGroups((prev) => ({ ...next, ...prev }))
+  }, [pathname, searchParams])
+
+  function toggleGroup(label: string) {
+    setOpenGroups((s) => ({ ...s, [label]: !s[label] }))
+  }
 
   async function onLogout() {
     const res = await fetch("/api/auth/logout", { method: "POST" })
@@ -67,27 +127,114 @@ export function AdminSidebar() {
           <h1 className="font-serif font-bold text-base tracking-tight">PORTFOLIO ADMIN</h1>
         </Link>
 
-        {GROUPS.map((group) => (
-          <div key={group.label} className="pt-5">
-            <p className="text-xs font-medium text-muted-foreground px-4 pb-2">{group.label}</p>
-            {group.items.map((item) => {
-              const Icon = item.icon
-              const itemPath = item.href.split("?")[0]
-              const active = pathname === itemPath || (itemPath !== "/admin" && pathname.startsWith(itemPath))
+        {SECTIONS.map((section) => (
+          <div key={section.label} className="pt-5">
+            <p className="text-xs font-medium text-muted-foreground px-4 pb-2">{section.label}</p>
+            {section.items.map((item) => {
+              if (!isGroup(item)) {
+                const Icon = item.icon
+                const active = isItemActive(item.href, pathname, searchParams)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-3 h-10 px-4 rounded-md text-sm transition-colors mb-1",
+                      active
+                        ? "bg-secondary text-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                    )}
+                  >
+                    <Icon className={cn("h-[18px] w-[18px] flex-shrink-0", active && "text-primary")} />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                )
+              }
+
+              // Group with children
+              const GroupIcon = item.icon
+              const open = openGroups[item.label] ?? false
+              const anyChildActive = item.children.some((c) => isItemActive(c.href, pathname, searchParams))
+              // 자식이 active 면 부모는 self-active 가 아님 (구분 표시)
+              const parentSelfActive = item.href
+                ? isItemActive(item.href, pathname, searchParams) && !anyChildActive
+                : false
+              const parentHighlighted = parentSelfActive || anyChildActive
+
+              const rowClasses = cn(
+                "flex items-center gap-3 h-10 px-4 rounded-md text-sm transition-colors",
+                parentSelfActive
+                  ? "bg-secondary text-foreground font-semibold"
+                  : parentHighlighted
+                    ? "text-foreground font-semibold hover:bg-accent"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground",
+              )
+
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 h-10 px-4 rounded-md text-sm transition-colors mb-1",
-                    active
-                      ? "bg-secondary text-foreground font-semibold"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                <div key={item.label} className="mb-1">
+                  {item.href ? (
+                    <div className={rowClasses + " pr-1"}>
+                      <Link
+                        href={item.href}
+                        className="flex items-center gap-3 flex-1 min-w-0"
+                      >
+                        <GroupIcon className={cn("h-[18px] w-[18px] flex-shrink-0", parentHighlighted && "text-primary")} />
+                        <span className="flex-1 truncate text-left">{item.label}</span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => toggleGroup(item.label)}
+                        aria-label={open ? `${item.label} 접기` : `${item.label} 펼치기`}
+                        className="p-1 rounded hover:bg-background/60 flex-shrink-0"
+                      >
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform",
+                            open && "rotate-180",
+                          )}
+                        />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(item.label)}
+                      className={cn(rowClasses, "w-full")}
+                    >
+                      <GroupIcon className={cn("h-[18px] w-[18px] flex-shrink-0", parentHighlighted && "text-primary")} />
+                      <span className="flex-1 truncate text-left">{item.label}</span>
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 transition-transform flex-shrink-0",
+                          open && "rotate-180",
+                        )}
+                      />
+                    </button>
                   )}
-                >
-                  <Icon className={cn("h-[18px] w-[18px] flex-shrink-0", active && "text-primary")} />
-                  <span className="truncate">{item.label}</span>
-                </Link>
+                  {open && (
+                    <div className="ml-3 mt-0.5 border-l border-border pl-2">
+                      {item.children.map((child) => {
+                        const Icon = child.icon
+                        const active = isItemActive(child.href, pathname, searchParams)
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            className={cn(
+                              "flex items-center gap-3 h-9 px-3 rounded-md text-[13px] transition-colors mb-0.5",
+                              active
+                                ? "bg-secondary text-foreground font-semibold"
+                                : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                            )}
+                          >
+                            <Icon className={cn("h-4 w-4 flex-shrink-0", active && "text-primary")} />
+                            <span className="truncate">{child.label}</span>
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
               )
             })}
           </div>
@@ -97,7 +244,7 @@ export function AdminSidebar() {
       <div className="border-t border-border p-3">
         <Button onClick={onLogout} variant="outline" className="w-full justify-center gap-3">
           <LogOut className="h-[18px] w-[18px]" />
-          Sign out
+          로그아웃
         </Button>
       </div>
     </aside>

@@ -15,6 +15,11 @@ export const heroInput = z.object({
   email: z.string().email().optional().or(z.literal("")),
   emailSecondary: z.string().email().optional().or(z.literal("")),
   portrait: imageRef.optional().nullable(),
+  marqueeItems: z
+    .array(z.string().trim().min(1))
+    .min(6, "회전 배너는 최소 6개 이상 필요합니다")
+    .max(20)
+    .optional(),
 })
 
 export type HeroInput = z.infer<typeof heroInput>

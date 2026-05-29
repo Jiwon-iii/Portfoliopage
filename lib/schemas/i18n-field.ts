@@ -37,11 +37,14 @@ export function pickLang(field: I18nField | I18nFieldOptional | null | undefined
 }
 
 /**
- * 이미지 참조 (Vercel Blob URL + alt).
+ * 이미지 참조 (Vercel Blob URL + alt + 자연 크기).
+ * width/height 는 비율 자동 보정에 사용 (업로드 시 클라이언트가 측정).
  */
 export const imageRef = z.object({
   url: z.string().url(),
   alt: z.string().optional().nullable(),
+  width: z.number().int().positive().optional(),
+  height: z.number().int().positive().optional(),
 })
 
 export type ImageRef = z.infer<typeof imageRef>

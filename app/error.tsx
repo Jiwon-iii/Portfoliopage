@@ -12,15 +12,15 @@ export default function ErrorBoundary({ error, reset }: { error: Error & { diges
     <main className="min-h-screen grid place-items-center px-6">
       <div className="text-center max-w-md">
         <div className="font-mono text-xs text-destructive tracking-widest mb-4">500 · ERROR</div>
-        <h1 className="font-serif text-5xl font-black tracking-tighter mb-4">뭔가 어긋났어요</h1>
-        <p className="text-muted-foreground mb-8">잠깐 새로고침 해보거나, 처음으로 돌아가세요.</p>
+        <h1 className="font-serif text-5xl font-black tracking-tighter mb-4">문제가 발생했습니다</h1>
+        <p className="text-muted-foreground mb-8">잠시 후 다시 시도하거나, 홈으로 돌아가 주세요.</p>
         {error.digest && (
-          <p className="font-mono text-xs text-muted-foreground mb-6">에러 ID: {error.digest}</p>
+          <p className="font-mono text-xs text-muted-foreground mb-6">오류 코드: {error.digest}</p>
         )}
         <div className="flex gap-3 justify-center">
           <Button onClick={() => reset()}>다시 시도</Button>
           <Button asChild variant="outline">
-            <a href="/">처음으로</a>
+            <a href="/">홈으로</a>
           </Button>
         </div>
       </div>

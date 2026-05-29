@@ -3,12 +3,12 @@ import { getIronSession } from "iron-session"
 import { sessionOptions, type AdminSession } from "@/lib/auth"
 
 /**
- * 어드민 경로 보호 미들웨어.
+ * 어드민 경로 보호 프록시.
  * - /admin/* 접근 시 세션 검증
  * - 미인증 시 /login 으로 redirect (원래 가려던 곳을 ?from= 으로)
  * - /login 은 이미 인증된 상태면 /admin 으로 redirect (불필요한 로그인 폼 노출 방지)
  */
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   const isAdminPath = pathname.startsWith("/admin")

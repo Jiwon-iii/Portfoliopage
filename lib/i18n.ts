@@ -19,13 +19,13 @@ export const labels = {
 
   // 섹션 제목
   sectionFeatured: { ko: "영웅 프로젝트", ja: "主な作品", en: "Featured Work" },
-  sectionFeaturedSub: { ko: "대표 작품 한 가지", ja: "代表作", en: "Selected case" },
+  sectionFeaturedSub: { ko: "대표 프로젝트 한 가지", ja: "代表プロジェクト", en: "Selected case" },
   sectionOther: { ko: "그 외 작업", ja: "その他の作品", en: "Other Works" },
   sectionOtherSub: { ko: "기타 프로젝트", ja: "他のプロジェクト", en: "Other projects" },
   sectionBuilding: { ko: "진행 중", ja: "制作中", en: "Currently Building" },
   sectionBuildingSub: { ko: "지금 만들고 있는 것", ja: "今作っているもの", en: "Now building" },
   sectionAbout: { ko: "소개", ja: "紹介", en: "About" },
-  sectionAboutSub: { ko: "신지원에 대하여", ja: "シン・ジウォンについて", en: "About Shin Jiwon" },
+  sectionAboutSub: { ko: "Who I Am", ja: "Who I Am", en: "Who I Am" },
   sectionEducation: { ko: "학력", ja: "学歴", en: "Education" },
   sectionExperience: { ko: "경력 · 활동", ja: "経歴", en: "Experience" },
   sectionSkills: { ko: "사용 기술", ja: "技術", en: "Skills" },

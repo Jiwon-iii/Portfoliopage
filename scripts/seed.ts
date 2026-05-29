@@ -28,7 +28,7 @@ async function main() {
   const hero = {
     slug: "main",
     name: { ko: "신지원", ja: "シン・ジウォン", en: "Shin Jiwon" },
-    tagline: { ko: "Next.js로 풀스택 웹을 만들면서 거기에 *AI*를 박아넣는 개발자." },
+    tagline: { ko: "Next.js로 풀스택 웹을 만들고, 거기에 *AI*를 자연스럽게 녹여내는 개발자." },
     metaLeft: { ko: "포트폴리오 · 2026 · 개발자" },
     location: { ko: "서울" },
     focus: { ko: "AI × 풀스택" },
@@ -44,11 +44,11 @@ async function main() {
   // ── About ────────────────────────────────────────
   const about = {
     slug: "main",
-    heading: { ko: "웹을 만들면서 *AI를 함께* 박아넣는 작업을 합니다." },
+    heading: { ko: "*AI가 자연스럽게 녹아든 웹*을 만들고 싶습니다." },
     paragraphs: [
-      { ko: "Next.js로 풀스택 웹을 만들고, MongoDB로 데이터를 조작하고, 지금은 기계학습 공부와 AI 기능 통합에 집중하고 있습니다." },
-      { ko: "기술 사이 경계를 넘는 호기심을 가지고 있습니다. 다음 자리에서 만들고 싶은 건 AI가 자연스럽게 박혀있는 웹 제품입니다." },
-      { ko: "이 사이트 자체도 제가 만든 어드민으로 콘텐츠가 관리되는 풀스택 작품입니다. 그 자체가 작업물 중 하나입니다." },
+      { ko: "Next.js로 풀스택 웹을 만들고 MongoDB로 데이터를 다루며, 지금은 기계학습을 공부하면서 AI 기능을 제품에 직접 붙여보고 있습니다." },
+      { ko: "한 가지 기술에 머무르기보다 경계를 넘나들며 익히는 걸 즐깁니다. 앞으로 만들고 싶은 건, 사용자가 AI를 의식하지 않을 만큼 자연스럽게 동작하는 웹 제품입니다." },
+      { ko: "이 사이트도 어드민까지 직접 설계해 만든 풀스택 작업물입니다." },
     ],
     updatedAt: new Date(),
   }
@@ -58,7 +58,8 @@ async function main() {
   const works = [
     {
       slug: "aisports",
-      type: "featured",
+      type: "general",
+      status: "completed",
       order: 0,
       title: { ko: "AIsports 태권도 대회 시스템", ja: "", en: "AIsports Taekwondo System" },
       tagline: { ko: "AI 심판 도입한 태권도 대회 — 랭킹·매니저 페이지 담당" },
@@ -77,8 +78,9 @@ async function main() {
     },
     {
       slug: "department-board",
-      type: "other",
-      order: 0,
+      type: "general",
+      status: "completed",
+      order: 1,
       title: { ko: "학과 전자게시판" },
       tagline: { ko: "관리자가 글 올리면 학과 복도 TV에 자동 표시" },
       description: { ko: "Next.js + Supabase. 관리자 페이지에서 작성한 콘텐츠가 학내 디스플레이로 자동 전송." },
@@ -134,8 +136,9 @@ async function main() {
     },
     {
       slug: "us-taekwondo",
-      type: "building",
-      order: 0,
+      type: "general",
+      status: "in-progress",
+      order: 2,
       title: { ko: "미국 태권도 운영 시스템" },
       tagline: { ko: "미국 기업 협업 — 전체 시스템 설계 진행 중" },
       description: { ko: "미국 태권도 도장 운영 전반을 다루는 SaaS 를 미국 기업과 협업으로 설계·구현 중." },
@@ -148,8 +151,9 @@ async function main() {
     },
     {
       slug: "local-commerce-ai",
-      type: "building",
-      order: 1,
+      type: "general",
+      status: "in-progress",
+      order: 3,
       title: { ko: "로컬 커머스 관광 AI" },
       tagline: { ko: "관광바우처 사업의 관광 AI 기능 개발 (한국 기업 협업)" },
       description: { ko: "관광 관련 AI 기능 개발을 담당. AI 통합 풀스택 작업의 두 번째 증명." },
@@ -249,7 +253,7 @@ async function main() {
   await upsertSingleton(db, "settings", {
     slug: "main",
     siteName: { ko: "신지원 Portfolio", ja: "シン・ジウォン Portfolio", en: "Shin Jiwon Portfolio" },
-    metaDescription: { ko: "Next.js로 풀스택 웹을 만들면서 거기에 AI를 박아넣는 개발자." },
+    metaDescription: { ko: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자." },
     metaKeywords: ["신지원", "포트폴리오", "Next.js", "AI", "풀스택"],
     enabledLanguages: ["ko"],
     defaultLanguage: "ko",

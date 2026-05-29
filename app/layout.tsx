@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     default: "신지원 / Shin Jiwon — Portfolio",
     template: "%s · 신지원",
   },
-  description: "Next.js로 풀스택 웹을 만들면서 거기에 AI를 박아넣는 개발자.",
+  description: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자.",
   authors: [{ name: "Shin Jiwon", url: "https://github.com/Jiwon-iii" }],
   creator: "Shin Jiwon",
   keywords: ["신지원", "Shin Jiwon", "포트폴리오", "Next.js", "AI", "풀스택", "Portfolio"],
@@ -45,12 +45,12 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     siteName: "신지원 Portfolio",
     title: "신지원 / Shin Jiwon — Portfolio",
-    description: "Next.js로 풀스택 웹을 만들면서 거기에 AI를 박아넣는 개발자.",
+    description: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자.",
   },
   twitter: {
     card: "summary_large_image",
     title: "신지원 / Shin Jiwon — Portfolio",
-    description: "Next.js로 풀스택 웹을 만들면서 거기에 AI를 박아넣는 개발자.",
+    description: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자.",
   },
   robots: { index: true, follow: true },
 }

@@ -27,13 +27,9 @@ async function loadAll() {
       getHero(),
       getAbout(),
     ])
-    // 프로젝트 = featured + other + building (진행 중은 같은 섹션에서 "진행 중" 배지로 자동 구분)
+    // 프로젝트 = 일반(general). 진행 상태(status)는 카드 안에서 배지로 자동 구분.
     return {
-      projects: [
-        ...allWorks.filter((w) => w.type === "featured"),
-        ...allWorks.filter((w) => w.type === "other"),
-        ...allWorks.filter((w) => w.type === "building"),
-      ],
+      projects: allWorks.filter((w) => w.type === "general"),
       practice: allWorks.filter((w) => w.type === "practice"),
       education,
       experience,
@@ -64,7 +60,7 @@ export default async function HomePage() {
   return (
     <main>
       <HeroSection hero={data.hero} lang={lang} />
-      <Marquee />
+      <Marquee items={data.hero?.marqueeItems} />
       <ProjectsSection works={data.projects} lang={lang} />
       <PracticeSection works={data.practice} lang={lang} />
       <AboutSection about={data.about} lang={lang} />

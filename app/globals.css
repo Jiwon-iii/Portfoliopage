@@ -114,3 +114,12 @@
     color: var(--primary-foreground);
   }
 }
+
+/* 슬라이더 등에서 스크롤바 숨기기 (네이티브 드래그/스와이프는 유지) */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

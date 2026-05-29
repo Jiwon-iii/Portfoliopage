@@ -6,7 +6,9 @@ import { toast } from "sonner"
 import { Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
+import { ImageUpload, type UploadedImage } from "@/components/admin/image-upload"
 import type { About } from "@/lib/schemas/about"
 
 type I18nValue = { ko?: string | null; ja?: string | null; en?: string | null }
@@ -15,8 +17,16 @@ export function AboutForm({ initial }: { initial: About | null }) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [heading, setHeading] = useState<I18nValue>(initial?.heading ?? { ko: "" })
-  const [paragraphs, setParagraphs] = useState<I18nValue[]>(initial?.paragraphs?.length ? initial.paragraphs : [{ ko: "" }])
-  const [caption, setCaption] = useState<I18nValue>(initial?.caption ?? { ko: "" })
+  const [paragraphs, setParagraphs] = useState<I18nValue[]>(
+    initial?.paragraphs?.length ? initial.paragraphs : [{ ko: "" }],
+  )
+  const [images, setImages] = useState<UploadedImage[]>(
+    initial?.images?.map((img) => ({
+      url: img.url,
+      alt: img.alt,
+      ...(img.width && img.height ? { width: img.width, height: img.height } : {}),
+    })) ?? [],
+  )
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -25,14 +35,14 @@ export function AboutForm({ initial }: { initial: About | null }) {
       const res = await fetch("/api/about", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ heading, paragraphs, caption }),
+        body: JSON.stringify({ heading, paragraphs, images }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         toast.error(err.error || "저장 실패")
         return
       }
-      toast.success("About 저장 완료")
+      toast.success("자기소개 저장 완료")
       router.refresh()
     } finally {
       setSaving(false)
@@ -81,12 +91,13 @@ export function AboutForm({ initial }: { initial: About | null }) {
       </Card>
 
       <Card className="p-6 space-y-3">
-        <I18nTabs label="포트레이트 캡션 (선택)" value={caption} onChange={(v) => setCaption(v)} />
+        <Label>자기소개 사진 <span className="text-muted-foreground text-xs">최대 5장. 여러 장 올리면 슬라이더로 표시</span></Label>
+        <ImageUpload value={images} onChange={(v) => setImages(v)} max={5} />
       </Card>
 
       <div className="flex justify-end sticky bottom-0 bg-background py-4 border-t border-border">
         <Button type="submit" disabled={saving}>
-          {saving ? "저장 중..." : "About 저장"}
+          {saving ? "저장 중..." : "자기소개 저장"}
         </Button>
       </div>
     </form>

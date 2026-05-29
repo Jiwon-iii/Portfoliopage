@@ -341,7 +341,7 @@ Portfolio/
 │       ├── works.ts, education.ts, experience.ts
 │       ├── skills.ts, hero.ts, about.ts
 │       └── media.ts
-├── middleware.ts                      # /admin/* 경로 보호 + 언어 라우팅
+├── proxy.ts                           # /admin/* 경로 보호 + 언어 라우팅 (구 middleware.ts)
 ├── public/portrait.jpg                # 증명사진 (또는 어드민 업로드 후 Vercel Blob)
 ├── .env.local                         # ADMIN_PASSWORD, MONGODB_URI, BLOB_TOKEN, SESSION_SECRET
 └── package.json
@@ -371,7 +371,7 @@ Portfolio/
    │ GET /admin/dashboard      │                                │
    │ Cookie: session=...       │                                │
    │──────────────────────────>│                                │
-   │                           │ middleware.ts 검증             │
+   │                           │ proxy.ts 검증                 │
    │                           │ 유효 → 통과, 무효 → /login redirect│
    │ 어드민 페이지 응답           │                                │
    │<──────────────────────────│                                │

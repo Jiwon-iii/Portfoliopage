@@ -13,7 +13,7 @@ export function ContactSection({ hero }: { hero: Hero | null }) {
           — LET&apos;S BUILD SOMETHING TOGETHER
         </div>
         <h2 className="font-serif text-[clamp(64px,9vw,128px)] font-black tracking-tighter leading-none mb-12">
-          같이 <em className="font-italic not-italic italic text-primary font-normal">일해요?</em>
+          함께 <em className="font-italic not-italic italic text-primary font-normal">만들어봐요</em>
         </h2>
         <a
           href={`mailto:${email}`}
@@ -45,9 +45,8 @@ export function SiteFooter() {
           <span>© 2026 신지원</span>
           <span className="font-serif text-[10px] opacity-60">シン・ジウォン</span>
         </div>
-        <div className="flex gap-6">
-          <span className="font-mono">BUILT WITH NEXT.JS + MONGODB</span>
-          <span>자체 어드민으로 관리</span>
+        <div className="font-mono tracking-wider">
+          NEXT.JS · TYPESCRIPT · MONGODB · TAILWIND
         </div>
       </div>
     </footer>

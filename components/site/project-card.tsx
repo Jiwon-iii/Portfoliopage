@@ -1,6 +1,6 @@
-import Image from "next/image"
 import { GitBranch, ArrowUpRight } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { ProjectImageSlider } from "@/components/site/project-image-slider"
 import { pickLang, type Lang } from "@/lib/i18n"
 import type { Work } from "@/lib/schemas/work"
 
@@ -26,7 +26,7 @@ export function ProjectCard({
   const title = pickLang(work.title, lang)
   const tagline = pickLang(work.tagline, lang)
   const description = pickLang(work.description, lang)
-  const thumb = work.images?.[0]
+  const images = work.images ?? []
   const num = String(index + 1).padStart(3, "0")
 
   if (variant === "wide") {
@@ -36,15 +36,13 @@ export function ProjectCard({
       <article
         className="grid lg:grid-cols-2 gap-10 py-12 border-b border-border last:border-b-0"
       >
-        <div className={`relative aspect-[4/3] rounded-md overflow-hidden border border-border bg-secondary ${imageRight ? "lg:order-2" : ""}`}>
-          {thumb ? (
-            <Image src={thumb.url} alt={thumb.alt || title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-          ) : (
-            <div className="absolute inset-0 grid place-items-center text-muted-foreground font-mono text-xs tracking-wider">
-              SCREENSHOT
-            </div>
-          )}
-        </div>
+        <ProjectImageSlider
+          images={images}
+          alt={title}
+          ratio="4 / 3"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className={imageRight ? "lg:order-2" : ""}
+        />
 
         <div className="flex flex-col justify-center">
           <div className="font-mono text-[11px] text-primary tracking-wider mb-3">
@@ -97,16 +95,16 @@ export function ProjectCard({
   // 일반 카드
   return (
     <article className="group flex flex-col bg-card border border-border rounded-md overflow-hidden hover:border-foreground transition-colors">
-      <div className="relative aspect-video bg-secondary overflow-hidden">
-        {thumb ? (
-          <Image src={thumb.url} alt={thumb.alt || title} fill className="object-cover group-hover:scale-[1.02] transition-transform duration-500" sizes="(max-width: 768px) 100vw, 50vw" />
-        ) : (
-          <div className="absolute inset-0 grid place-items-center text-muted-foreground font-mono text-xs tracking-wider">
-            SCREENSHOT
-          </div>
-        )}
+      <div className="relative">
+        <ProjectImageSlider
+          images={images}
+          alt={title}
+          ratio="16 / 9"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="border-0 rounded-none"
+        />
         {work.year && (
-          <div className="absolute top-3 right-3 font-mono text-[10px] tracking-wider bg-background/85 backdrop-blur px-2 py-1 rounded text-foreground">
+          <div className="absolute top-3 right-3 z-10 font-mono text-[10px] tracking-wider bg-background/85 backdrop-blur px-2 py-1 rounded text-foreground">
             {work.year}
           </div>
         )}

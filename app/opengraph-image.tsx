@@ -33,9 +33,9 @@ export default async function OGImage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ fontSize: 28, fontWeight: 700, color: "#18181B", lineHeight: 1.3 }}>
-            Next.js로 풀스택 웹을 만들면서
+            Next.js로 풀스택 웹을 만들고,
             <br />
-            거기에 <span style={{ color: "#6366F1", fontStyle: "italic" }}>AI</span>를 박아넣는 개발자.
+            거기에 <span style={{ color: "#6366F1", fontStyle: "italic" }}>AI</span>를 자연스럽게 녹여내는 개발자.
           </div>
           <div style={{ display: "flex", gap: 16, fontSize: 16, color: "#6366F1", marginTop: 16, alignItems: "center" }}>
             <span style={{ width: 10, height: 10, background: "#6366F1", borderRadius: 999 }} />

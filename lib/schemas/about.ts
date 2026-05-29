@@ -1,13 +1,13 @@
 import { z } from "zod"
-import { i18nField, i18nFieldOptional } from "./i18n-field"
+import { i18nField, i18nFieldOptional, imageRef } from "./i18n-field"
 
 /**
  * About 단일 도큐먼트 — 자기소개 섹션.
  */
 export const aboutInput = z.object({
-  heading: i18nField,                          // 큰 인용문 ("웹을 만들면서 AI를 박아넣는...")
-  paragraphs: z.array(i18nFieldOptional).default([]),  // 본문 단락들
-  caption: i18nFieldOptional,                  // 포트레이트 캡션
+  heading: i18nField,                                    // 큰 인용문
+  paragraphs: z.array(i18nFieldOptional).default([]),    // 본문 단락
+  images: z.array(imageRef).default([]),                 // 자기소개용 사진 (여러 장, 슬라이더)
 })
 
 export type AboutInput = z.infer<typeof aboutInput>

@@ -16,7 +16,7 @@ export function ProjectsSection({ works, lang = "ko" }: { works: Work[]; lang?: 
         num="01"
         totalNum="07"
         title="프로젝트"
-        subtitle="모든 작품 상세"
+        subtitle="모든 프로젝트 상세"
         aside={<>SELECTED WORKS<br/>ALL DETAILED</>}
       >
         <div className="rounded-lg border border-dashed border-border p-12 text-center text-muted-foreground">
@@ -32,7 +32,7 @@ export function ProjectsSection({ works, lang = "ko" }: { works: Work[]; lang?: 
       num="01"
       totalNum="07"
       title="프로젝트"
-      subtitle="모든 작품 상세"
+      subtitle="모든 프로젝트 상세"
       aside={<>SELECTED WORKS<br/>{works.length} TOTAL</>}
     >
       <div className="border-t-2 border-foreground">
@@ -51,6 +51,6 @@ export function ProjectsSection({ works, lang = "ko" }: { works: Work[]; lang?: 
 }
 
 function pickCaseSubtitle(w: Work): string {
-  if (w.type === "featured") return "AI 통합 풀스택"
+  if (w.status === "in-progress") return "IN PROGRESS"
   return w.techs[0]?.toUpperCase() ?? "PROJECT"
 }

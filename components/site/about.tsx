@@ -1,21 +1,24 @@
 import { SectionShell } from "./section-shell"
+import { ProjectImageSlider } from "./project-image-slider"
 import { pickLang, type Lang } from "@/lib/i18n"
 import type { About } from "@/lib/schemas/about"
 
 const FALLBACK_PARAGRAPHS = [
-  { ko: "Next.js로 풀스택 웹을 만들고, MongoDB로 데이터를 조작하고, 지금은 기계학습 공부와 AI 기능 통합에 집중하고 있습니다.", ja: "", en: "" },
-  { ko: "기술 사이 경계를 넘는 호기심을 가지고 있습니다. 다음 자리에서 만들고 싶은 건 AI가 자연스럽게 박혀있는 웹 제품입니다.", ja: "", en: "" },
+  { ko: "Next.js로 풀스택 웹을 만들고 MongoDB로 데이터를 다루며, 지금은 기계학습을 공부하면서 AI 기능을 제품에 직접 붙여보고 있습니다.", ja: "", en: "" },
+  { ko: "한 가지 기술에 머무르기보다 경계를 넘나들며 익히는 걸 즐깁니다. 앞으로 만들고 싶은 건, 사용자가 AI를 의식하지 않을 만큼 자연스럽게 동작하는 웹 제품입니다.", ja: "", en: "" },
+  { ko: "이 사이트도 어드민까지 직접 설계해 만든 풀스택 작업물입니다.", ja: "", en: "" },
 ]
 
-const FALLBACK_HEADING = { ko: "웹을 만들면서 *AI를 함께* 박아넣는 작업을 합니다.", ja: "", en: "" }
+const FALLBACK_HEADING = { ko: "*AI가 자연스럽게 녹아든 웹*을 만들고 싶습니다.", ja: "", en: "" }
 
 export function AboutSection({ about, lang = "ko" }: { about: About | null; lang?: Lang }) {
   const heading = pickLang(about?.heading || FALLBACK_HEADING, lang)
   const paragraphs = about?.paragraphs?.length ? about.paragraphs : FALLBACK_PARAGRAPHS
+  const images = about?.images ?? []
   const headingParts = heading.split(/(\*[^*]+\*)/g)
 
   return (
-    <SectionShell id="about" num="03" totalNum="07" numPosition="left" title="소개" subtitle="신지원에 대하여" aside={<>PROFILE<br/>SHIN JIWON</>}>
+    <SectionShell id="about" num="03" totalNum="07" numPosition="left" title="소개" subtitle="Who I Am" aside={<>PROFILE<br/>SHIN JIWON</>}>
       <div className="grid lg:grid-cols-[1.5fr_1fr] gap-15 items-start">
         <div>
           <h3 className="font-serif text-4xl font-extrabold tracking-tight leading-snug mb-8">
@@ -38,28 +41,8 @@ export function AboutSection({ about, lang = "ko" }: { about: About | null; lang
           </div>
         </div>
 
-        {/* 포트레이트 우측 디자인 박스 */}
-        <div className="relative aspect-[3/4] rounded-md overflow-hidden border border-border bg-gradient-to-br from-card via-secondary to-secondary p-6 flex items-end">
-          <div
-            aria-hidden
-            className="absolute inset-0 flex items-center justify-center font-italic italic text-[200px] text-foreground opacity-10 leading-none tracking-tighter"
-          >
-            JW
-          </div>
-          <div className="absolute top-6 right-6 w-12 h-12 rounded-full border-2 border-primary opacity-60" />
-          <div className="font-mono text-[10px] tracking-widest text-primary font-semibold z-10">
-            <div className="w-6 h-px bg-primary mb-1.5" />
-            PORTRAIT
-            <br />NO.001
-          </div>
-          <div className="ml-auto font-mono text-[11px] z-10 text-foreground">
-            초상 · 2026
-            <br />
-            <span className="font-serif text-base font-extrabold tracking-tight">신지원</span>
-            <br />
-            <span className="font-italic italic text-primary text-[13px]">Shin Jiwon, dev.</span>
-          </div>
-        </div>
+        {/* 자기소개 사진 — 여러 장이면 슬라이더 */}
+        <ProjectImageSlider images={images} alt="자기소개" ratio="3 / 4" sizes="(max-width: 768px) 100vw, 40vw" />
       </div>
     </SectionShell>
   )

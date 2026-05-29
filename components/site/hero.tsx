@@ -4,7 +4,7 @@ import type { Hero } from "@/lib/schemas/hero"
 
 const FALLBACK = {
   name: { ko: "신지원", ja: "シン・ジウォン", en: "Shin Jiwon" },
-  tagline: { ko: "Next.js로 풀스택 웹을 만들면서 거기에 AI를 박아넣는 개발자.", ja: "", en: "" },
+  tagline: { ko: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자.", ja: "", en: "" },
   metaLeft: { ko: "포트폴리오 · 2026 · 개발자", ja: "", en: "" },
   location: { ko: "서울", ja: "", en: "" },
   focus: { ko: "AI × 풀스택", ja: "", en: "" },
@@ -27,7 +27,7 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
   const taglineParts = tagline.split(/(\*[^*]+\*)/g)
 
   return (
-    <section className="relative py-28 overflow-hidden">
+    <section className="relative min-h-[calc(100svh-110px)] flex items-center overflow-hidden">
       {/* 거대 배경 텍스트 */}
       <div
         aria-hidden
@@ -37,7 +37,7 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
         developer.
       </div>
 
-      <div className="relative z-10 max-w-[1180px] mx-auto px-10 grid lg:grid-cols-[1fr_460px] gap-15 items-start">
+      <div className="relative z-10 max-w-[1180px] mx-auto px-10 grid lg:grid-cols-[1fr_360px] gap-44 items-start">
         {/* LEFT: 이름 + 태그라인 + 메타 */}
         <div className="pt-6">
           <div className="text-[11px] font-mono text-muted-foreground tracking-wider mb-6 flex items-center gap-4">
@@ -45,7 +45,7 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
             <span className="flex-1 h-px bg-border" />
           </div>
 
-          <h1 className="font-serif text-[clamp(72px,11vw,144px)] font-semibold tracking-[-0.03em] leading-[1] mb-3">
+          <h1 className="font-serif text-[clamp(72px,11vw,144px)] font-semibold tracking-[-0.03em] leading-[1.05] mb-3">
             {name}
           </h1>
           <div className="font-italic italic text-3xl text-muted-foreground tracking-tight">
@@ -54,7 +54,7 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
 
           <div className="mt-12 max-w-xl">
             <div className="text-xs text-primary font-medium mb-3">— 한 줄 소개</div>
-            <h2 className="font-serif text-3xl font-bold tracking-tight leading-snug">
+            <h2 className="font-serif text-3xl font-bold tracking-tight leading-normal">
               {taglineParts.map((part, i) =>
                 part.startsWith("*") && part.endsWith("*") ? (
                   <em key={i} className="font-italic not-italic italic text-primary font-normal">
@@ -88,16 +88,9 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
 
         {/* RIGHT: 증명사진 */}
         <div className="relative aspect-[4/5] rounded-md overflow-hidden border border-border shadow-md bg-gradient-to-br from-card to-secondary">
-          {/* 메타 라벨들 */}
-          <div className="absolute top-3.5 left-3.5 z-30 font-mono text-[10px] font-semibold tracking-wider bg-background/80 backdrop-blur px-2.5 py-1 rounded">
-            PORTRAIT · 2026
-          </div>
+          {/* 메타 라벨 — 이름만 */}
           <div className="absolute top-3.5 right-3.5 z-30 font-mono text-[10px] font-semibold tracking-wider bg-background/80 backdrop-blur px-2.5 py-1 rounded">
             {name} / SHIN JIWON
-          </div>
-          <div className="absolute bottom-3.5 left-3.5 z-30 font-mono text-[10px] font-semibold tracking-wider text-primary bg-background/80 backdrop-blur px-2.5 py-1 rounded flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            OPEN TO WORK · 구직 중
           </div>
 
           {/* 사진 또는 placeholder */}
@@ -107,7 +100,7 @@ export function HeroSection({ hero, lang = "ko" }: { hero: Hero | null; lang?: L
               alt={h.portrait.alt || `${name} 증명사진`}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 460px"
+              sizes="(max-width: 768px) 100vw, 360px"
               priority
             />
           ) : (

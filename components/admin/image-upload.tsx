@@ -6,7 +6,29 @@ import { Upload, X } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
-export type UploadedImage = { url: string; alt?: string | null }
+export type UploadedImage = {
+  url: string
+  alt?: string | null
+  width?: number
+  height?: number
+}
+
+async function readDimensions(file: File): Promise<{ width: number; height: number } | null> {
+  const url = URL.createObjectURL(file)
+  try {
+    const img = new window.Image()
+    img.src = url
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve()
+      img.onerror = () => reject(new Error("dimension read failed"))
+    })
+    return { width: img.naturalWidth, height: img.naturalHeight }
+  } catch {
+    return null
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
 
 export function ImageUpload({
   value,
@@ -29,6 +51,7 @@ export function ImageUpload({
     try {
       const uploaded: UploadedImage[] = []
       for (const file of Array.from(files)) {
+        const dims = await readDimensions(file)
         const form = new FormData()
         form.append("file", file)
         const res = await fetch("/api/upload", { method: "POST", body: form })
@@ -38,7 +61,11 @@ export function ImageUpload({
           continue
         }
         const data = await res.json()
-        uploaded.push({ url: data.url, alt: file.name })
+        uploaded.push({
+          url: data.url,
+          alt: file.name,
+          ...(dims ? { width: dims.width, height: dims.height } : {}),
+        })
       }
       if (uploaded.length) {
         onChange([...value, ...uploaded])
@@ -83,23 +110,27 @@ export function ImageUpload({
       </label>
 
       {value.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-4 pt-2 pr-2">
           {value.map((img, i) => (
-            <div key={img.url} className="relative w-24 h-16 rounded overflow-hidden border border-border">
-              <Image src={img.url} alt={img.alt || ""} fill className="object-cover" sizes="96px" />
+            <div key={img.url} className="relative w-36 h-28">
+              {/* 이미지 컨테이너 — overflow-hidden 으로 라운드 처리 */}
+              <div className="absolute inset-0 rounded-md overflow-hidden border border-border bg-secondary">
+                <Image src={img.url} alt={img.alt || ""} fill className="object-cover" sizes="144px" />
+                {i === 0 && (
+                  <span className="absolute bottom-0 left-0 right-0 bg-primary text-primary-foreground text-[10px] font-mono tracking-wider text-center py-1">
+                    THUMBNAIL
+                  </span>
+                )}
+              </div>
+              {/* X 버튼 — 컨테이너 밖에 있어서 잘리지 않음 */}
               <button
                 type="button"
                 onClick={() => onChange(value.filter((_, idx) => idx !== i))}
-                className="absolute -top-2 -right-2 w-5 h-5 bg-foreground text-background rounded-full grid place-items-center"
+                className="absolute -top-2 -right-2 w-6 h-6 bg-zinc-900 text-white rounded-full grid place-items-center shadow-md ring-2 ring-background hover:bg-destructive hover:scale-110 transition-all z-10"
                 aria-label="이미지 제거"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3 stroke-[2.5]" />
               </button>
-              {i === 0 && (
-                <span className="absolute bottom-0 left-0 right-0 bg-primary text-primary-foreground text-[9px] font-mono tracking-wider text-center py-0.5">
-                  THUMBNAIL
-                </span>
-              )}
             </div>
           ))}
         </div>
