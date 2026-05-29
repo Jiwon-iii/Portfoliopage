@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache"
 import { listEducation, createEducation } from "@/lib/repo/education"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   return NextResponse.json(await listEducation())
 }

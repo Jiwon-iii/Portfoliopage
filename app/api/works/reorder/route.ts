@@ -4,6 +4,8 @@ import { z } from "zod"
 import { reorderWorks } from "@/lib/repo/works"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 
+export const dynamic = "force-dynamic"
+
 const body = z.object({
   ids: z.array(z.string().min(1)).min(1),
 })

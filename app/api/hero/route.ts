@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache"
 import { getHero, upsertHero } from "@/lib/repo/hero"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   return NextResponse.json(await getHero())
 }

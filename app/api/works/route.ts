@@ -4,6 +4,8 @@ import { listWorks, createWork } from "@/lib/repo/works"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 import { workType } from "@/lib/schemas/work"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest) {
   const typeParam = req.nextUrl.searchParams.get("type")
   const parsedType = typeParam ? workType.safeParse(typeParam) : null

@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from "next/server"
 import { put } from "@vercel/blob"
 import { requireAdmin } from "@/lib/api-auth"
 
+export const dynamic = "force-dynamic"
+
 const MAX_BYTES = 5 * 1024 * 1024 // 5MB
 const ALLOWED = ["image/png", "image/jpeg", "image/webp", "image/gif"]
 

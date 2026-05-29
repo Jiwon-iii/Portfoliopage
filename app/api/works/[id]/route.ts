@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache"
 import { getWorkById, updateWork, deleteWork } from "@/lib/repo/works"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 
+export const dynamic = "force-dynamic"
+
 interface Ctx {
   params: Promise<{ id: string }>
 }

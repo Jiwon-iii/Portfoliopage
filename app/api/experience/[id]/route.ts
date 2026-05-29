@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache"
 import { getExperienceById, updateExperience, deleteExperience } from "@/lib/repo/experience"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 
+export const dynamic = "force-dynamic"
+
 interface Ctx { params: Promise<{ id: string }> }
 
 export async function GET(_req: NextRequest, { params }: Ctx) {

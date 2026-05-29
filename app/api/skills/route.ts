@@ -4,6 +4,8 @@ import { listSkills, createSkill } from "@/lib/repo/skills"
 import { requireAdmin, handleZodError } from "@/lib/api-auth"
 import { skillCategory } from "@/lib/schemas/skill"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest) {
   const catParam = req.nextUrl.searchParams.get("category")
   const parsed = catParam ? skillCategory.safeParse(catParam) : null
