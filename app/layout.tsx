@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Geist, JetBrains_Mono, Instrument_Serif } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
+import { getSiteLang } from "@/lib/site-lang"
 import "./globals.css"
 
 /**
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
   keywords: ["신지원", "Shin Jiwon", "포트폴리오", "Next.js", "AI", "풀스택", "Portfolio"],
   openGraph: {
     type: "website",
-    locale: "ko_KR",
+    locale: "ja_JP",
     siteName: "신지원 Portfolio",
     title: "신지원 / Shin Jiwon — Portfolio",
     description: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자.",
@@ -55,9 +56,10 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { lang } = await getSiteLang()
   return (
-    <html lang="ko" className={`${geist.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}>
+    <html lang={lang} className={`${geist.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}>
       <head>
         {/* Pretendard - 한국어 본문 폰트 */}
         <link
@@ -65,6 +67,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           as="style"
           crossOrigin="anonymous"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+        />
+        {/* Noto Sans JP - 일본어 본문 폰트 (없으면 가나/한자가 시스템 폴백으로 깨짐) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
         />
       </head>
       <body className="min-h-screen bg-background text-foreground antialiased">

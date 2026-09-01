@@ -91,6 +91,7 @@
 
   --font-sans: "Pretendard Variable", Pretendard, var(--font-geist-sans), system-ui, sans-serif;
   --font-serif: var(--font-geist-sans), "Pretendard Variable", Pretendard, sans-serif;
+  --font-jp: "Noto Sans JP", "Pretendard Variable", var(--font-geist-sans), system-ui, sans-serif;
   --font-italic: var(--font-instrument-serif), serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
@@ -108,6 +109,11 @@
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-sans);
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  /* 일본어 표시 시 Noto Sans JP 우선 — 가나/한자 폴백 깨짐·리플로우 방지 */
+  :lang(ja) {
+    --font-sans: var(--font-jp);
+    --font-serif: var(--font-jp);
   }
   ::selection {
     background: var(--primary);

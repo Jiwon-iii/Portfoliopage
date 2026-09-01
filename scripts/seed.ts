@@ -255,8 +255,8 @@ async function main() {
     siteName: { ko: "신지원 Portfolio", ja: "シン・ジウォン Portfolio", en: "Shin Jiwon Portfolio" },
     metaDescription: { ko: "Next.js로 풀스택 웹을 만들고, 거기에 AI를 자연스럽게 녹여내는 개발자." },
     metaKeywords: ["신지원", "포트폴리오", "Next.js", "AI", "풀스택"],
-    enabledLanguages: ["ko"],
-    defaultLanguage: "ko",
+    enabledLanguages: ["ko", "ja"],
+    defaultLanguage: "ja",
     ogImageUrl: "",
     updatedAt: new Date(),
   })

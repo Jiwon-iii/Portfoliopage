@@ -12,8 +12,8 @@ export { LANG_COOKIE }
  * enabled 목록은 토팁바에서 토글 버튼을 그릴 때 사용.
  */
 export async function getSiteLang(): Promise<{ lang: Lang; enabled: Lang[] }> {
-  let enabled: Lang[] = ["ko"]
-  let def: Lang = "ko"
+  let enabled: Lang[] = ["ko", "ja"]
+  let def: Lang = "ja"
   try {
     const settings = await getSettings()
     if (settings?.enabledLanguages?.length) enabled = settings.enabledLanguages as Lang[]

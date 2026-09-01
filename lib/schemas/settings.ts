@@ -8,8 +8,8 @@ export const settingsInput = z.object({
   siteName: i18nField,
   metaDescription: i18nFieldOptional,
   metaKeywords: z.array(z.string()).default([]),
-  enabledLanguages: z.array(z.enum(LANGS)).default(["ko"]),  // V1=ko만
-  defaultLanguage: z.enum(LANGS).default("ko"),
+  enabledLanguages: z.array(z.enum(LANGS)).default(["ko", "ja"]),
+  defaultLanguage: z.enum(LANGS).default("ja"),
   ogImageUrl: z.string().url().optional().or(z.literal("")),
 })
 
