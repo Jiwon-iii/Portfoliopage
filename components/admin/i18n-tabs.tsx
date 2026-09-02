@@ -7,10 +7,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAdminLang } from "@/components/admin/admin-lang"
 import type { Lang } from "@/lib/i18n"
 
-const LANG_LABELS: Record<Lang, { name: string; flag: string }> = {
+const LANG_LABELS: Partial<Record<Lang, { name: string; flag: string }>> = {
   ko: { name: "한국어", flag: "KR" },
   ja: { name: "日本語", flag: "JP" },
-  en: { name: "English", flag: "EN" },
 }
 
 type I18nValue = { ko?: string | null; ja?: string | null; en?: string | null }
@@ -51,7 +50,7 @@ export function I18nTabs({
           {required && <span className="text-primary text-xs font-mono ml-1.5">필수</span>}
           {globalMode && (
             <span className="text-[10px] font-mono tracking-wider text-muted-foreground border border-border rounded px-1.5 py-0.5">
-              {LANG_LABELS[active].flag}
+              {LANG_LABELS[active]?.flag}
               {active !== "ko" && !v[active] && <span className="ml-1 opacity-60">비어있음</span>}
             </span>
           )}
@@ -75,7 +74,7 @@ export function I18nTabs({
                     : "border-transparent text-muted-foreground hover:text-foreground",
                 )}
               >
-                {LANG_LABELS[lang].flag}
+                {LANG_LABELS[lang]?.flag}
                 {!isEmpty && <span className="w-1 h-1 rounded-full bg-emerald-500" />}
                 {isEmpty && lang !== "ko" && <span className="text-[10px] opacity-50">비어있음</span>}
               </button>

@@ -9,8 +9,8 @@ import type { Lang } from "@/lib/i18n"
  * 각 i18n 필드마다 KR/JP/EN 탭을 따로 누르는 대신, 여기서 한 번 고르면
  * 모든 I18nTabs 가 같은 언어 입력으로 전환된다. (localStorage 에 유지)
  */
-const LANG_LABELS: Record<Lang, string> = { ko: "KR", ja: "JP", en: "EN" }
-const ORDER: Lang[] = ["ko", "ja", "en"]
+const LANG_LABELS: Partial<Record<Lang, string>> = { ko: "KR", ja: "JP" }
+const ORDER: Lang[] = ["ko", "ja"]
 const STORAGE_KEY = "admin-content-lang"
 
 type Ctx = { lang: Lang; setLang: (l: Lang) => void }
@@ -22,7 +22,7 @@ export function AdminLangProvider({ children }: { children: React.ReactNode }) {
   // 새로고침 후에도 마지막 선택 언어 복원
   useEffect(() => {
     const saved = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null
-    if (saved === "ko" || saved === "ja" || saved === "en") setLangState(saved)
+    if (saved === "ko" || saved === "ja") setLangState(saved)
   }, [])
 
   const setLang = (l: Lang) => {
