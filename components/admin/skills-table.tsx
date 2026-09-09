@@ -120,7 +120,7 @@ export function SkillsTable({ items: initial }: { items: Skill[] }) {
                 <TableCell className="font-mono text-[10px] text-primary tracking-wider">
                   {CATEGORY_LABEL[s.category]}
                 </TableCell>
-                <TableCell className="font-serif font-semibold">{s.name}</TableCell>
+                <TableCell className="font-serif font-semibold">{s.name?.ko || "—"}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{s.level?.ko || "—"}</TableCell>
                 <TableCell>
                   <span className={`text-xs font-medium ${s.published ? "text-emerald-600" : "text-muted-foreground"}`}>

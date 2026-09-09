@@ -230,16 +230,16 @@ async function main() {
   // ── Skills ────────────────────────────────────────
   // 카테고리: main(주력) / usable(활용 가능). 학습 중·호기심 다 usable 로 통합.
   const skills = [
-    { slug: "skill-nextjs",  order: 0, category: "main",   name: "Next.js",     level: { ko: "능숙" }, published: true },
-    { slug: "skill-ts",      order: 1, category: "main",   name: "TypeScript",  level: { ko: "능숙" }, published: true },
-    { slug: "skill-react",   order: 2, category: "main",   name: "React",       level: { ko: "능숙" }, published: true },
-    { slug: "skill-mongo",   order: 3, category: "main",   name: "MongoDB",     level: { ko: "실무" }, published: true },
-    { slug: "skill-node",    order: 4, category: "main",   name: "Node.js",     level: { ko: "실무" }, published: true },
-    { slug: "skill-ml",      order: 0, category: "usable", name: "기계학습",            level: { ko: "활용 가능" }, published: true },
-    { slug: "skill-openai",  order: 1, category: "usable", name: "OpenAI API",         level: { ko: "활용 가능" }, published: true },
-    { slug: "skill-embed",   order: 2, category: "usable", name: "임베딩 / 벡터 검색",   level: { ko: "활용 가능" }, published: true },
-    { slug: "skill-supabase",order: 3, category: "usable", name: "Supabase",           level: { ko: "활용 가능" }, published: true },
-    { slug: "skill-arduino", order: 4, category: "usable", name: "아두이노 / 임베디드", level: { ko: "활용 가능" }, published: true },
+    { slug: "skill-nextjs",  order: 0, category: "main",   name: { ko: "Next.js", ja: "Next.js" },       level: { ko: "능숙" }, published: true },
+    { slug: "skill-ts",      order: 1, category: "main",   name: { ko: "TypeScript", ja: "TypeScript" }, level: { ko: "능숙" }, published: true },
+    { slug: "skill-react",   order: 2, category: "main",   name: { ko: "React", ja: "React" },           level: { ko: "능숙" }, published: true },
+    { slug: "skill-mongo",   order: 3, category: "main",   name: { ko: "MongoDB", ja: "MongoDB" },       level: { ko: "실무" }, published: true },
+    { slug: "skill-node",    order: 4, category: "main",   name: { ko: "Node.js", ja: "Node.js" },       level: { ko: "실무" }, published: true },
+    { slug: "skill-ml",      order: 0, category: "usable", name: { ko: "기계학습", ja: "機械学習" },          level: { ko: "활용 가능" }, published: true },
+    { slug: "skill-openai",  order: 1, category: "usable", name: { ko: "OpenAI API", ja: "OpenAI API" },     level: { ko: "활용 가능" }, published: true },
+    { slug: "skill-embed",   order: 2, category: "usable", name: { ko: "임베딩 / 벡터 검색", ja: "埋め込み / ベクトル検索" }, level: { ko: "활용 가능" }, published: true },
+    { slug: "skill-supabase",order: 3, category: "usable", name: { ko: "Supabase", ja: "Supabase" },         level: { ko: "활용 가능" }, published: true },
+    { slug: "skill-arduino", order: 4, category: "usable", name: { ko: "아두이노 / 임베디드", ja: "Arduino / 組み込み" }, level: { ko: "활용 가능" }, published: true },
   ]
   for (const s of skills) await upsertBySlug(db, "skills", s)
 

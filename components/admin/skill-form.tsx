@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
@@ -20,14 +19,14 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
   const isEdit = !!skill
   const [saving, setSaving] = useState(false)
   const [category, setCategory] = useState<SkillCategory>(skill?.category ?? "main")
-  const [name, setName] = useState(skill?.name ?? "")
+  const [name, setName] = useState<I18nValue>(skill?.name ?? { ko: "" })
   const [level, setLevel] = useState<I18nValue>(skill?.level ?? { ko: "" })
   const [published, setPublished] = useState(skill?.published ?? true)
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim()) {
-      toast.error("기술명 필수")
+    if (!name.ko?.trim()) {
+      toast.error("기술명(한국어) 필수")
       return
     }
     setSaving(true)
@@ -78,11 +77,7 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
             <option value="usable">활용 가능 스택</option>
           </select>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="name">기술명 <span className="text-primary text-xs font-mono ml-1">필수</span></Label>
-          <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Next.js" />
-          <p className="text-xs text-muted-foreground">영문 그대로 (예: Next.js, TypeScript, MongoDB)</p>
-        </div>
+        <I18nTabs label="기술명" required hint="영문명은 한/일 동일 (예: Next.js) · 예: 아두이노→Arduino / 組み込み" value={name} onChange={(v) => setName(v)} />
         <I18nTabs label="수준 라벨" hint="예: 능숙 / 실무 / 진행" value={level} onChange={(v) => setLevel(v)} />
       </Card>
 

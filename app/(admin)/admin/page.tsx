@@ -211,7 +211,7 @@ export default async function AdminDashboard() {
                     key={s._id}
                     className="inline-flex items-center px-2 py-0.5 border border-border rounded font-mono text-[10px] tracking-wider bg-background text-foreground"
                   >
-                    {s.name}
+                    {s.name?.ko}
                   </span>
                 ))}
                 {data.skills.length > 10 && (

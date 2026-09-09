@@ -1,5 +1,5 @@
 import { SectionShell } from "./section-shell"
-import { label, type Lang } from "@/lib/i18n"
+import { label, pickLang, type Lang } from "@/lib/i18n"
 import type { Skill, SkillCategory } from "@/lib/schemas/skill"
 
 export function SkillsSection({
@@ -23,7 +23,7 @@ export function SkillsSection({
           <p className="font-serif text-base font-medium leading-relaxed">
             {all.map((s, i) => (
               <span key={s._id}>
-                {s.name}
+                {pickLang(s.name, lang)}
                 {i < all.length - 1 && (
                   <span className="mx-2.5 text-muted-foreground font-sans font-normal">·</span>
                 )}
