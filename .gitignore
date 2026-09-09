@@ -44,3 +44,6 @@ next-env.d.ts
 AGENTS.md
 CLAUDE.md
 .gstack/
+
+# 로컬 정적 홈페이지 뽑기 결과물 (레포에 포함 안 함)
+homepage.html

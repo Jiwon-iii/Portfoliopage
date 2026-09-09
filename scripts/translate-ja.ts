@@ -122,18 +122,21 @@ async function main() {
     },
     {
       match: { slug: "shop-nextjs" },
+      title: "ショッピングモール",
       tagline: "Next.jsベースのショッピングモール — カート・決済・管理者",
       description: "Next.js 14 App Routerで作成したショッピングモールの練習作。",
       sections: [{ body: "Next.js 14 App Routerで作成したショッピングモールの練習作。" }],
     },
     {
       match: { slug: "voca-react" },
+      title: "単語暗記アプリ",
       tagline: "単語暗記Webアプリ — カードインタラクション・ローカル状態",
       description: "Reactで作成した単語暗記の学習ツール。",
       sections: [{ body: "Reactで作成した単語暗記の学習ツール。" }],
     },
     {
       match: { slug: "todolist-nextjs" },
+      title: "Todoリスト",
       tagline: "Next.jsフルスタックTodo — CRUD・ルーティングの基礎固め",
       description: "Next.jsフルスタックTodoリストの練習作。",
       sections: [{ body: "Next.jsフルスタックTodoリストの練習作。" }],

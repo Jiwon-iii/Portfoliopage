@@ -1,6 +1,6 @@
 import { SectionShell } from "./section-shell"
 import { ProjectImageSlider } from "./project-image-slider"
-import { pickLang, type Lang } from "@/lib/i18n"
+import { label, pickLang, type Lang } from "@/lib/i18n"
 import type { About } from "@/lib/schemas/about"
 
 const FALLBACK_PARAGRAPHS = [
@@ -18,7 +18,7 @@ export function AboutSection({ about, lang = "ko" }: { about: About | null; lang
   const headingParts = heading.split(/(\*[^*]+\*)/g)
 
   return (
-    <SectionShell id="about" num="03" totalNum="07" numPosition="left" title="소개" subtitle="Who I Am" aside={<>PROFILE<br/>SHIN JIWON</>}>
+    <SectionShell id="about" num="03" totalNum="07" numPosition="left" title={label("sectionAbout", lang)} subtitle={label("sectionAboutSub", lang)} aside={<>PROFILE<br/>SHIN JIWON</>}>
       <div className="grid lg:grid-cols-[1.5fr_1fr] gap-15 items-start">
         <div>
           <h3 className="font-serif text-4xl font-extrabold tracking-tight leading-snug mb-8">
