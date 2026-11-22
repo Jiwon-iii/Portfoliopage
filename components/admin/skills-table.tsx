@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -8,12 +8,7 @@ import { GripVertical, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import type { Skill, SkillCategory } from "@/lib/schemas/skill"
-
-const CATEGORY_LABEL: Record<SkillCategory, string> = {
-  main: "주력",
-  usable: "활용",
-}
+import { SKILL_CATEGORY, type Skill } from "@/lib/schemas/skill"
 
 /**
  * 드래그로 순서 변경 가능한 기술 목록.
@@ -27,9 +22,12 @@ export function SkillsTable({ items: initial }: { items: Skill[] }) {
   const [overIdx, setOverIdx] = useState<number | null>(null)
   const [pending, startTransition] = useTransition()
 
-  useEffect(() => {
+  // 서버에서 새 목록이 오면(router.refresh 등) 화면 목록도 맞춤
+  const [prev, setPrev] = useState(initial)
+  if (initial !== prev) {
+    setPrev(initial)
     setItems(initial)
-  }, [initial])
+  }
 
   function move(from: number, to: number) {
     if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) return
@@ -118,7 +116,7 @@ export function SkillsTable({ items: initial }: { items: Skill[] }) {
                   <GripVertical className="h-4 w-4" />
                 </TableCell>
                 <TableCell className="font-mono text-[10px] text-primary tracking-wider">
-                  {CATEGORY_LABEL[s.category]}
+                  {(SKILL_CATEGORY[s.category]?.ko ?? s.category)}
                 </TableCell>
                 <TableCell className="font-serif font-semibold">{s.name?.ko || "—"}</TableCell>
                 <TableCell className="text-sm text-muted-foreground">{s.level?.ko || "—"}</TableCell>

@@ -143,7 +143,7 @@ export function WorkForm({ work }: { work?: Work | null }) {
               className="w-full h-9 px-3 border border-input rounded-md bg-background text-sm"
             >
               <option value="general">일반 (대표 / 상세 프로젝트)</option>
-              <option value="practice">연습 (간략 리스트)</option>
+              <option value="practice">연습 (사이트에 안 나옴)</option>
             </select>
           </div>
           <div className="space-y-2">

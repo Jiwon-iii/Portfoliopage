@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -30,9 +30,12 @@ export function WorksTable({ works }: { works: Work[] }) {
   const [pending, startTransition] = useTransition()
 
   // 부모로부터 새 props 가 들어오면 state 동기화 (추가/삭제 후 router.refresh 등)
-  useEffect(() => {
+  // 서버에서 새 목록이 오면(router.refresh 등) 화면 목록도 맞춤
+  const [prev, setPrev] = useState(works)
+  if (works !== prev) {
+    setPrev(works)
     setItems(works)
-  }, [works])
+  }
 
   function move(from: number, to: number) {
     if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) return

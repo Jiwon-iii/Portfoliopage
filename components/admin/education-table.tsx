@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -21,9 +21,12 @@ export function EducationTable({ items: initial }: { items: Education[] }) {
   const [overIdx, setOverIdx] = useState<number | null>(null)
   const [pending, startTransition] = useTransition()
 
-  useEffect(() => {
+  // 서버에서 새 목록이 오면(router.refresh 등) 화면 목록도 맞춤
+  const [prev, setPrev] = useState(initial)
+  if (initial !== prev) {
+    setPrev(initial)
     setItems(initial)
-  }, [initial])
+  }
 
   function move(from: number, to: number) {
     if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) return

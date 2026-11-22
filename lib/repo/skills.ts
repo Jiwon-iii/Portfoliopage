@@ -18,14 +18,6 @@ export async function listSkills(category?: SkillCategory, publishedOnly = true)
   return docs.map((d) => toClient(d as never))
 }
 
-export async function listSkillsByCategory(): Promise<Record<SkillCategory, Skill[]>> {
-  const all = await listSkills()
-  return {
-    main: all.filter((s) => s.category === "main"),
-    usable: all.filter((s) => s.category === "usable"),
-  }
-}
-
 export async function getSkillById(id: string): Promise<Skill | null> {
   if (!ObjectId.isValid(id)) return null
   const db = await getDb()

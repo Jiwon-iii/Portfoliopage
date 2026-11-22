@@ -39,7 +39,7 @@ export default async function WorksAdminPage({ searchParams }: Props) {
           <div>
             <h2 className="font-serif text-3xl font-extrabold tracking-tight">프로젝트 관리</h2>
             <p className="text-muted-foreground text-sm mt-1">
-              일반 · 연습 모두 여기서 관리. 진행 상태는 각 항목 안에서 설정. 행을 끌어서 순서 변경.
+              일반 · 연습 모두 여기서 관리 (연습은 사이트에 나오지 않음). 진행 상태는 각 항목 안에서 설정. 행을 끌어서 순서 변경.
             </p>
           </div>
           <Button asChild>

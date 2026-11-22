@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useSearchParams, useRouter } from "next/navigation"
 import {
   PanelsTopLeft, Home, List, User, GraduationCap,
   Briefcase, Code2, LogOut, Layers,
-  ChevronDown, FolderKanban,
+  ChevronDown, FolderKanban, Target, Compass,
 } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
@@ -52,6 +52,8 @@ const SECTIONS: Section[] = [
     label: "소개",
     items: [
       { href: "/admin/about", label: "자기소개", icon: User },
+      { href: "/admin/expertise", label: "분야", icon: Target },
+      { href: "/admin/principles", label: "가치", icon: Compass },
       { href: "/admin/education", label: "학력", icon: GraduationCap },
       { href: "/admin/experience", label: "경력", icon: Briefcase },
       { href: "/admin/skills", label: "기술", icon: Code2 },
@@ -91,7 +93,10 @@ export function AdminSidebar() {
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
 
   // 페이지 바뀔 때 active 자식 가진 그룹 또는 부모 자체가 active 면 자동으로 펼침
-  useEffect(() => {
+  const routeKey = `${pathname}?${searchParams.toString()}`
+  const [prevRoute, setPrevRoute] = useState<string | null>(null)
+  if (routeKey !== prevRoute) {
+    setPrevRoute(routeKey)
     const next: Record<string, boolean> = {}
     SECTIONS.forEach((section) => {
       section.items.forEach((item) => {
@@ -103,7 +108,7 @@ export function AdminSidebar() {
       })
     })
     setOpenGroups((prev) => ({ ...next, ...prev }))
-  }, [pathname, searchParams])
+  }
 
   function toggleGroup(label: string) {
     setOpenGroups((s) => ({ ...s, [label]: !s[label] }))

@@ -17,7 +17,7 @@ export default async function SkillsAdminPage() {
         <div className="flex justify-between items-end mb-6">
           <div>
             <h2 className="font-serif text-3xl font-extrabold tracking-tight">사용 기술</h2>
-            <p className="text-muted-foreground text-sm mt-1">주력 / 활용 가능 영역으로 분류. 행을 드래그해 순서를 바꿉니다.</p>
+            <p className="text-muted-foreground text-sm mt-1">Frontend · Backend · Database · AI/ML · Infra · 기타 · 협업 도구로 묶어, 사이트 「概要・沿革 › 技術」 칸에 그 순서대로 나옵니다. 행을 드래그해 묶음 안 순서를 바꿉니다.</p>
           </div>
           <Button asChild>
             <Link href="/admin/skills/new"><Plus className="h-4 w-4" />새 기술</Link>

@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { I18nTabs } from "@/components/admin/i18n-tabs"
 import { AdminLangBar } from "@/components/admin/admin-lang"
-import type { Skill, SkillCategory } from "@/lib/schemas/skill"
+import { SKILL_CATEGORY, skillCategory, type Skill, type SkillCategory } from "@/lib/schemas/skill"
 
 type I18nValue = { ko?: string | null; ja?: string | null; en?: string | null }
 
@@ -18,7 +18,7 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
   const router = useRouter()
   const isEdit = !!skill
   const [saving, setSaving] = useState(false)
-  const [category, setCategory] = useState<SkillCategory>(skill?.category ?? "main")
+  const [category, setCategory] = useState<SkillCategory>(skill?.category ?? "frontend")
   const [name, setName] = useState<I18nValue>(skill?.name ?? { ko: "" })
   const [level, setLevel] = useState<I18nValue>(skill?.level ?? { ko: "" })
   const [published, setPublished] = useState(skill?.published ?? true)
@@ -67,17 +67,16 @@ export function SkillForm({ skill }: { skill?: Skill | null }) {
       <AdminLangBar />
       <Card className="p-6 space-y-5">
         <div className="space-y-2">
-          <Label>카테고리</Label>
+          <Label>묶음</Label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as SkillCategory)}
             className="w-full h-9 px-3 border border-input rounded-md bg-background text-sm"
           >
-            <option value="main">주력 스택</option>
-            <option value="usable">활용 가능 스택</option>
+            {skillCategory.options.map((c) => <option key={c} value={c}>{SKILL_CATEGORY[c].ko}</option>)}
           </select>
         </div>
-        <I18nTabs label="기술명" required hint="영문명은 한/일 동일 (예: Next.js) · 예: 아두이노→Arduino / 組み込み" value={name} onChange={(v) => setName(v)} />
+        <I18nTabs label="기술명" required hint="영문명은 한/일 동일 (예: Next.js) · 예: 협업 필터링 (ALS) → 協調フィルタリング (ALS)" value={name} onChange={(v) => setName(v)} />
         <I18nTabs label="수준 라벨" hint="예: 능숙 / 실무 / 진행" value={level} onChange={(v) => setLevel(v)} />
       </Card>
 

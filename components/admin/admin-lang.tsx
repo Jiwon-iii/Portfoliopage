@@ -22,6 +22,7 @@ export function AdminLangProvider({ children }: { children: React.ReactNode }) {
   // 새로고침 후에도 마지막 선택 언어 복원
   useEffect(() => {
     const saved = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage 는 마운트 뒤에만 읽을 수 있음 (서버 렌더와 어긋나지 않게)
     if (saved === "ko" || saved === "ja") setLangState(saved)
   }, [])
 
